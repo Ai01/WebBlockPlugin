@@ -7,6 +7,7 @@ webBlockPlugin
 
 * 添加block网站的ui
 * 删除block的网站
+* 设置block网站的时间段 
 * 自定义的block提示页
 * extension icon
 * block页面中插入广告
