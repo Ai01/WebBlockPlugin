@@ -2,6 +2,12 @@
 webBlockPlugin
 
 
+## todo
+
+1. 添加block网站的ui
+2. 自定义的block提示页
+3. block页面中插入广告
+
 ## 参考资料
 
 别人总结的基本介绍：https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%AA%97%E5%8F%A3id
