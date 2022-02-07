@@ -1,0 +1,26 @@
+{
+  "name": "chrome-plugin-demo",
+  "version": "1.0",
+  "description": "Build an Extension!",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "scripts": [
+      "scripts/getCurrentWindow.js",
+      "scripts/getCurrentTab.js",
+      "scripts/listenBackground.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/injectedToPage.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [
+    "tabs"
+  ]
+}
