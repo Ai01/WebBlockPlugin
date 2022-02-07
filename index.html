@@ -7,13 +7,50 @@
     <title>Document</title>
     <style>
         body {
-            min-width: 400px;
+            width: 300px;
+        }
+
+        div.form-example {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #messageText {
+            box-sizing: border-box;
+            margin: 0;
+            font-variant: tabular-nums;
+            list-style: none;
+            font-feature-settings: "tnum";
+            position: relative;
+            display: inline-block;
+            min-width: 0;
+            padding: 4px 11px;
+            color: #000000d9;
+            font-size: 14px;
+            line-height: 1.5715;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            transition: all .3s;
+            flex: 1
+        }
+
+        label {
+            color: #000000d9;
+            font-size: 14px;
+            width: 80px;
+            text-align: right;
+            margin-right: 10px;
         }
 
         #add-block-page-button {
-            background: aqua;
-            color: brown;
-            font-size: 24px;
+            color: #fff;
+            background: #0170fe;
+            font-size: 16px;
             border-radius: 4px;
             border: none;
         }
@@ -21,20 +58,18 @@
 </head>
 <body>
 
-<form>
-    <div>
-        <label for="matchText">关键词</label>
-        <input id="matchText" type="text">
+<!--TODO: if already block this site, should show delete block button-->
+
+<form id="block-info-form" name="block-info-form" method="post" class="form-example">
+    <div class="form-example">
+        <label for="messageText">提示语: </label>
+        <input type="text" name="messageText" id="messageText" required>
     </div>
-    <div>
-        <label for="messageText">提示语言</label>
-        <input id="messageText" type="text">
+    <div class="form-example">
+        <label for="add-block-page-button"></label>
+        <input id="add-block-page-button" type="submit" value="block此页面!">
     </div>
 </form>
-
-<button id="add-block-page-button" >
-    block 此页面
-</button>
 
 <script src="index.js"></script>
 </body>
