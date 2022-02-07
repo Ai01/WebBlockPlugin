@@ -1,3 +1,4 @@
+<!--popup ui need to provide customize add block page ability -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,12 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        #content{color: red;}
+        body {
+            min-width: 400px;
+        }
+
+        #add-block-page-button {
+            background: aqua;
+            color: brown;
+            font-size: 24px;
+            border-radius: 4px;
+            border: none;
+        }
     </style>
 </head>
 <body>
-<h1>chrome-plugin-test</h1>
-<p id="content"></p>
+
+<form>
+    <div>
+        <label for="matchText">关键词</label>
+        <input id="matchText" type="text">
+    </div>
+    <div>
+        <label for="messageText">提示语言</label>
+        <input id="messageText" type="text">
+    </div>
+</form>
+
+<button id="add-block-page-button" >
+    block 此页面
+</button>
+
 <script src="index.js"></script>
 </body>
 </html>

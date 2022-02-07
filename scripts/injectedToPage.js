@@ -5,6 +5,10 @@
 const getTemplate = data => `<html>${data}</html>`;
 
 function renderTemplate(html) {
+	if (!html) {
+		return;
+	}
+
 	document.open();
 	document.write(html)
 	document.close();
@@ -14,7 +18,7 @@ chrome.runtime.sendMessage({method: "newTab", site: window.location.host.toStrin
 	console.log('newTab response', response);
 
 	const {data, overwrite} = response || {};
-	if(!overwrite) return;
+	if (!overwrite) return;
 
 	const nextHtml = getTemplate(data);
 	document.body.innerHTML = renderTemplate(nextHtml);

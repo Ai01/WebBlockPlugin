@@ -1,3 +1,4 @@
+// todo: if block site can customize add, where to storage user's block site
 const BLOCK_SITE_LIST = [
 	{
 		url: "twitter.com",
@@ -7,7 +8,7 @@ const BLOCK_SITE_LIST = [
 	{
 		url: "qidian.com",
 		matches: "qidian",
-		message: "小说是别人的造物，别沉迷其中了？别做梦了，专心干活"
+		message: "小说是别人的造物，别沉迷其中了。别做梦了，专心干活"
 	},
 	{
 		url: "weibo.com",
@@ -38,7 +39,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			}
 		});
 
-		if(!alreadySend) {
+		if (!alreadySend) {
 			sendResponse({
 				overwrite: false,
 				data: message
@@ -46,4 +47,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		}
 
 	}
+
+	if (method === 'addBlockSite') {
+		const {site} = message;
+		BLOCK_SITE_LIST.push({
+			url: site
+		});
+	}
+
 });
