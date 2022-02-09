@@ -37,7 +37,7 @@ const GET_PAGE_URL = 'getCurrentPageUrl'; // 获取当前页面的url
 
 const judgeIsCurrentPageBlockedOrNot = (currentPageUrl, allBlockedSites) => {
 	if (typeof currentPageUrl !== 'string') return;
-	if (!(Array.isArray(allBlockedSites) && allBlockedSites.length > 0)) return;
+	if (!Array.isArray(allBlockedSites)) return;
 
 	let currentPageBeenBlocked = false;
 	allBlockedSites.forEach(i => {
@@ -64,7 +64,7 @@ EventCenter.listen(ALL_BLOCKED_SITES, (allBlockedSites) => {
 chrome.runtime.sendMessage({method: 'getAllBlockedSites'}, (response) => {
 	console.log('response', response);
 	const {allBlockedSites} = response || {};
-	if (Array.isArray(allBlockedSites) && allBlockedSites.length > 0) {
+	if (Array.isArray(allBlockedSites)) {
 		EventCenter.fire(ALL_BLOCKED_SITES, allBlockedSites);
 	}
 });
