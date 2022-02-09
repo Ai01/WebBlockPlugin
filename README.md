@@ -6,12 +6,12 @@ webBlockPlugin
 * block 页面
 * 添加当前页面到block中
 * 添加block网站的ui
+* 删除block的网站
 
 ## todo
 
 顺序决定优先级
 
-* 删除block的网站
 * 设置block网站的时间段 
 * 自定义的block提示页
 * extension icon

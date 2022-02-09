@@ -57,10 +57,11 @@
     </style>
 </head>
 <body>
+<button id="show-page-button" style="display: none" >显示此页面</button>
 
 <!--TODO: if already block this site, should show delete block button-->
 
-<form id="block-info-form" name="block-info-form" method="post" class="form-example">
+<form style="display: none" id="block-info-form" name="block-info-form" method="post" class="form-example">
     <div class="form-example">
         <label for="messageText">提示语: </label>
         <input type="text" name="messageText" id="messageText" required>

@@ -1,26 +1,142 @@
-const formEle = document.getElementById('block-info-form');
+class EventStore {
+	constructor() {
+		this.events = {}
+		this.commonData = {};
+	}
 
+	listen(eventName, callback) {
+		if (typeof callback !== 'function') return;
+		if (typeof eventName !== 'string') return;
 
-formEle.addEventListener('submit', () => {
-	const messageText = document.forms["block-info-form"]["messageText"].value;
+		if (!this.events[eventName]) {
+			this.events[eventName] = [callback];
+		} else {
+			this.events[eventName].push(callback);
+		}
+	}
 
-	// get the url of tab, window.location is the id for chrome extension
-	chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-		if (Array.isArray(tabs) && tabs.length > 0) {
-			const currentTab = tabs[0];
-			const currentTabUrl = currentTab?.url;
-			const host = new URL(currentTabUrl).host.toString();
+	fire(eventName, ...params) {
+		if (typeof eventName !== 'string') return;
+		if (!Array.isArray(this.events[eventName])) return;
 
-			chrome.runtime.sendMessage({
-				method: 'addBlockSite',
-				site: currentTabUrl,
-				host,
-				message: messageText
-			}, (response) => {
-				console.log('addBlockSite', response);
-			});
+		this.events[eventName].forEach(cb => {
+			cb(...params);
+		})
+	}
+
+	setCommonData(dataName, dataValue) {
+		this.commonData[dataName] = dataValue;
+	}
+}
+
+const EventCenter = new EventStore();
+const ALL_BLOCKED_SITES = 'allBlockedSites'; // 获取所有已经被block的页面
+const CURRENT_PAGE_NOT_BEEN_BLOCKED = 'currentPageNotBeenBlocked'; // 当前页面没有被blocked
+const CURRENT_PAGE_BEEN_BLOCKED = 'currentPageBeenBlocked'; // 当前页面被blocked
+const GET_PAGE_URL = 'getCurrentPageUrl'; // 获取当前页面的url
+
+const judgeIsCurrentPageBlockedOrNot = (currentPageUrl, allBlockedSites) => {
+	if (typeof currentPageUrl !== 'string') return;
+	if (!(Array.isArray(allBlockedSites) && allBlockedSites.length > 0)) return;
+
+	let currentPageBeenBlocked = false;
+	allBlockedSites.forEach(i => {
+		const {url, host} = i;
+		if ((host && currentPageUrl.indexOf(host) !== -1) || (url && !host && url === currentPageUrl)) {
+			currentPageBeenBlocked = true;
 		}
 	});
 
-	return false;
+	if (currentPageBeenBlocked) {
+		EventCenter.fire(CURRENT_PAGE_BEEN_BLOCKED);
+	} else {
+		EventCenter.fire(CURRENT_PAGE_NOT_BEEN_BLOCKED);
+	}
+}
+
+// get all been blocked sites url info
+EventCenter.listen(ALL_BLOCKED_SITES, (allBlockedSites) => {
+	EventCenter.setCommonData('allBlockedSites', allBlockedSites);
+
+	const {currentPageUrl} = EventCenter.commonData;
+	judgeIsCurrentPageBlockedOrNot(currentPageUrl, allBlockedSites);
+});
+chrome.runtime.sendMessage({method: 'getAllBlockedSites'}, (response) => {
+	console.log('response', response);
+	const {allBlockedSites} = response || {};
+	if (Array.isArray(allBlockedSites) && allBlockedSites.length > 0) {
+		EventCenter.fire(ALL_BLOCKED_SITES, allBlockedSites);
+	}
+});
+
+
+// get the url of tab, window.location is the id for chrome extension
+EventCenter.listen(GET_PAGE_URL, (currentPageUrl) => {
+	EventCenter.setCommonData('currentPageUrl', currentPageUrl);
+
+	const {allBlockedSites} = EventCenter.commonData;
+	judgeIsCurrentPageBlockedOrNot(currentPageUrl, allBlockedSites);
+});
+chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+	if (Array.isArray(tabs) && tabs.length > 0) {
+		const currentTab = tabs[0];
+		const currentTabUrl = currentTab?.url;
+		EventCenter.fire(GET_PAGE_URL, currentTabUrl)
+	}
+});
+
+// when page been blocked, show the button to delete blocked page
+EventCenter.listen(CURRENT_PAGE_BEEN_BLOCKED, () => {
+	const showPageButton = document.getElementById('show-page-button');
+	showPageButton.setAttribute('style', 'display:block');
+
+	const formEle = document.getElementById('block-info-form');
+	formEle.setAttribute('style', 'display:none');
+
+	const {currentPageUrl} = EventCenter.commonData;
+	const host = new URL(currentPageUrl).host.toString();
+
+	showPageButton.addEventListener('click', () => {
+		chrome.runtime.sendMessage({
+			method: 'removeBlockSite',
+			site: currentPageUrl,
+			host,
+		}, (response) => {
+			console.log('removeBlockSite', response);
+			const {success} = response;
+			if (success) {
+				EventCenter.fire(CURRENT_PAGE_NOT_BEEN_BLOCKED);
+			}
+		});
+	})
+});
+
+// when page isn't been blocked, add form ele to html and listen submit event;
+EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
+	const formEle = document.getElementById('block-info-form');
+	formEle.setAttribute('style', 'display:block');
+
+	const showPageButton = document.getElementById('show-page-button');
+	showPageButton.setAttribute('style', 'display:none');
+
+
+	formEle.addEventListener('submit', () => {
+		const messageText = document.forms["block-info-form"]["messageText"].value;
+		const {currentPageUrl} = EventCenter.commonData;
+		const host = new URL(currentPageUrl).host.toString();
+
+		chrome.runtime.sendMessage({
+			method: 'addBlockSite',
+			site: currentPageUrl,
+			host,
+			message: messageText
+		}, (response) => {
+			console.log('removeBlockSite', response);
+			const {success} = response;
+			if (success) {
+				EventCenter.fire(CURRENT_PAGE_BEEN_BLOCKED);
+			}
+		});
+	});
+
 })

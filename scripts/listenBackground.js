@@ -1,5 +1,5 @@
 // todo: if block site can customize add, where to storage user's block site
-const BLOCK_SITE_LIST = [
+let BLOCK_SITE_LIST = [
 	{
 		url: "twitter.com",
 		host: "twitter",
@@ -23,8 +23,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	const {method, site} = message || {};
 
 	if (method === 'newTab') {
-
-		// overwrite if site is been blocked
+		// overwrite the html page if site is been blocked
 		BLOCK_SITE_LIST.forEach(i => {
 			const {url, host, message} = i;
 
@@ -35,7 +34,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 			}
 		});
-
+		return;
 	}
 
 	if (method === 'addBlockSite') {
@@ -45,8 +44,39 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			...message
 		});
 
+
+		sendResponse({success: true});
+
 		// refresh current tab
 		chrome.tabs.reload();
+		return;
+	}
+
+	if (method === 'removeBlockSite') {
+		const {site: siteToRemove, host: hostToRemove} = message;
+
+		let removeIndex = -1;
+		BLOCK_SITE_LIST.forEach((i, index) => {
+			const {site, host} = i || {};
+			if (site === siteToRemove || host === hostToRemove) {
+				removeIndex = index;
+			}
+		})
+
+		BLOCK_SITE_LIST[removeIndex] = null;
+		BLOCK_SITE_LIST = BLOCK_SITE_LIST.filter(i => !!i);
+
+		sendResponse({success: true});
+
+		// refresh current tab
+		chrome.tabs.reload();
+		return;
+	}
+
+	if (method === 'getAllBlockedSites') {
+		sendResponse({
+			allBlockedSites: BLOCK_SITE_LIST
+		});
 	}
 
 });
