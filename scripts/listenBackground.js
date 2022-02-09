@@ -44,11 +44,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			...message
 		});
 
-
 		sendResponse({success: true});
-
-		// refresh current tab
-		chrome.tabs.reload();
 		return;
 	}
 
@@ -67,9 +63,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		BLOCK_SITE_LIST = BLOCK_SITE_LIST.filter(i => !!i);
 
 		sendResponse({success: true});
-
-		// refresh current tab
-		chrome.tabs.reload();
 		return;
 	}
 
@@ -77,6 +70,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		sendResponse({
 			allBlockedSites: BLOCK_SITE_LIST
 		});
+		return;
 	}
 
 });

@@ -105,7 +105,11 @@ EventCenter.listen(CURRENT_PAGE_BEEN_BLOCKED, () => {
 			console.log('removeBlockSite', response);
 			const {success} = response;
 			if (success) {
-				EventCenter.fire(CURRENT_PAGE_NOT_BEEN_BLOCKED);
+				// refresh current tab
+				chrome.tabs.reload();
+
+				// refresh popup
+				window.location.reload();
 			}
 		});
 	})
@@ -134,7 +138,11 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 			console.log('removeBlockSite', response);
 			const {success} = response;
 			if (success) {
-				EventCenter.fire(CURRENT_PAGE_BEEN_BLOCKED);
+				// refresh current tab
+				chrome.tabs.reload();
+
+				// refresh popup
+				window.location.reload();
 			}
 		});
 	});
