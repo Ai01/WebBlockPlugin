@@ -8,6 +8,7 @@ webBlockPlugin
 * 添加block网站的ui
 * 删除block的网站
 * icon
+* 数据存储
 
 ## todo
 
