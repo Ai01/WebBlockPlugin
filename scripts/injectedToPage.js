@@ -17,9 +17,14 @@ function renderTemplate(html) {
 chrome.runtime.sendMessage({method: "newTab", site: window.location.host.toString()}, (response) => {
 	console.log('newTab response', response);
 
-	const {data, overwrite} = response || {};
+	const {data, overwrite, redirect} = response || {};
 	if (!overwrite) return;
 
+	if(redirect) {
+		window.location.replace(redirect);
+		return;
+	}
+
 	const nextHtml = getTemplate(data);
-	document.body.innerHTML = renderTemplate(nextHtml);
+	renderTemplate(nextHtml);
 });

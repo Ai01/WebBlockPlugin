@@ -62,7 +62,7 @@ EventCenter.listen(ALL_BLOCKED_SITES, (allBlockedSites) => {
 	judgeIsCurrentPageBlockedOrNot(currentPageUrl, allBlockedSites);
 });
 chrome.runtime.sendMessage({method: 'getAllBlockedSites'}, (response) => {
-	console.log('response', response);
+	console.log('response for all', response);
 	const {allBlockedSites} = response || {};
 	if (Array.isArray(allBlockedSites)) {
 		EventCenter.fire(ALL_BLOCKED_SITES, allBlockedSites);
