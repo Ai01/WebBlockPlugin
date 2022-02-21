@@ -66,7 +66,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			if ((host && site.indexOf(host) !== -1) || (url && !host && url === site)) {
 				sendResponse({
 					overwrite: true,
-					redirect: 'https://github.com/Ai01?tab=stars',
+					redirect: 'https://github.com/Ai01',
 					data: message
 				});
 			}
