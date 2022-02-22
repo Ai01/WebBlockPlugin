@@ -54,6 +54,25 @@ const judgeIsCurrentPageBlockedOrNot = (currentPageUrl, allBlockedSites) => {
 	}
 }
 
+const setActiveUrlDom = (currentPageUrl) => {
+	if(!currentPageUrl) return;
+	const url = new URL(currentPageUrl);
+
+	const ele = document.getElementById('url');
+	ele.innerHTML = `${url.host}`;
+};
+
+const setFaviconDom = currentPageUrl => {
+	if(!currentPageUrl) return;
+
+	const ele = document.getElementById('icon');
+	const img = document.createElement('img');
+	img.setAttribute('src', `chrome://favicon/${currentPageUrl}`);
+	img.setAttribute('style','width:30px;height:30px;');
+
+	ele.appendChild(img);
+}
+
 // get all been blocked sites url info
 EventCenter.listen(ALL_BLOCKED_SITES, (allBlockedSites) => {
 	EventCenter.setCommonData('allBlockedSites', allBlockedSites);
@@ -73,6 +92,9 @@ chrome.runtime.sendMessage({method: 'getAllBlockedSites'}, (response) => {
 // get the url of tab, window.location is the id for chrome extension
 EventCenter.listen(GET_PAGE_URL, (currentPageUrl) => {
 	EventCenter.setCommonData('currentPageUrl', currentPageUrl);
+
+	setActiveUrlDom(currentPageUrl);
+	setFaviconDom(currentPageUrl);
 
 	const {allBlockedSites} = EventCenter.commonData;
 	judgeIsCurrentPageBlockedOrNot(currentPageUrl, allBlockedSites);
@@ -148,3 +170,4 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 	});
 
 })
+
