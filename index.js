@@ -68,7 +68,7 @@ const setFaviconDom = currentPageUrl => {
 	const ele = document.getElementById('icon');
 	const img = document.createElement('img');
 	img.setAttribute('src', `chrome://favicon/${currentPageUrl}`);
-	img.setAttribute('style','width:30px;height:30px;');
+	img.setAttribute('style','width:40px;height:40px;');
 
 	ele.appendChild(img);
 }

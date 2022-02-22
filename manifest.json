@@ -29,5 +29,10 @@
     "tabs",
     "storage",
     "chrome://favicon/"
-  ]
+  ],
+  "options_page": "options.html",
+  "options_ui":
+  {
+    "page": "options.html"
+  }
 }
