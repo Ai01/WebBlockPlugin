@@ -18,13 +18,15 @@ chrome.runtime.sendMessage({method: "newTab", site: window.location.host.toStrin
 	console.log('newTab response', response);
 
 	const {data, overwrite, redirect} = response || {};
-	if (!overwrite) return;
 
-	if(redirect) {
-		window.location.replace(redirect);
+	if (overwrite) {
+		const nextHtml = getTemplate(data);
+		renderTemplate(nextHtml);
 		return;
 	}
 
-	const nextHtml = getTemplate(data);
-	renderTemplate(nextHtml);
+	if (redirect) {
+		window.location.replace(redirect);
+	}
+
 });

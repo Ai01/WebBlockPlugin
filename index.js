@@ -55,7 +55,7 @@ const judgeIsCurrentPageBlockedOrNot = (currentPageUrl, allBlockedSites) => {
 }
 
 const setActiveUrlDom = (currentPageUrl) => {
-	if(!currentPageUrl) return;
+	if (!currentPageUrl) return;
 	const url = new URL(currentPageUrl);
 
 	const ele = document.getElementById('url');
@@ -63,12 +63,12 @@ const setActiveUrlDom = (currentPageUrl) => {
 };
 
 const setFaviconDom = currentPageUrl => {
-	if(!currentPageUrl) return;
+	if (!currentPageUrl) return;
 
 	const ele = document.getElementById('icon');
 	const img = document.createElement('img');
 	img.setAttribute('src', `chrome://favicon/size/128@1x/${currentPageUrl}`);
-	img.setAttribute('style','width:40px;height:40px;');
+	img.setAttribute('style', 'width:40px;height:40px;');
 
 	ele.appendChild(img);
 }
@@ -145,9 +145,8 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 	const showPageButton = document.getElementById('show-page-button');
 	showPageButton.setAttribute('style', 'display:none');
 
-
-	formEle.addEventListener('submit', () => {
-		const messageText = document.forms["block-info-form"]["messageText"].value;
+	const addBlockButton = document.getElementById('add-block-page-button');
+	addBlockButton.addEventListener('click', () => {
 		const {currentPageUrl} = EventCenter.commonData;
 		const host = new URL(currentPageUrl).host.toString();
 
@@ -155,9 +154,7 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 			method: 'addBlockSite',
 			site: currentPageUrl,
 			host,
-			message: messageText
 		}, (response) => {
-			console.log('removeBlockSite', response);
 			const {success} = response;
 			if (success) {
 				// refresh current tab
@@ -169,5 +166,32 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 		});
 	});
 
+	const addRedirectButton = document.getElementById('redirect-block-page-button');
+	addRedirectButton.addEventListener('click', () => {
+		const {currentPageUrl} = EventCenter.commonData;
+		const host = new URL(currentPageUrl).host.toString();
+
+		chrome.runtime.sendMessage({
+			method: 'addRedirectSite',
+			site: currentPageUrl,
+			host,
+		}, (response) => {
+			const {success} = response;
+			if (success) {
+				// refresh current tab
+				chrome.tabs.reload();
+
+				// refresh popup
+				window.location.reload();
+			}
+		});
+	})
+
 })
 
+
+// setting page
+const settingEle = document.getElementById("setting-page");
+settingEle.addEventListener('click', () => {
+	window.open('/options.html');
+})

@@ -22,42 +22,20 @@
             margin-bottom: 10px;
         }
 
-        #messageText {
-            box-sizing: border-box;
-            margin: 0;
-            font-variant: tabular-nums;
-            list-style: none;
-            font-feature-settings: "tnum";
-            position: relative;
-            display: inline-block;
-            min-width: 0;
-            padding: 4px 11px;
-            color: #000000d9;
-            font-size: 14px;
-            line-height: 1.5715;
-            background-color: #fff;
-            background-image: none;
-            border: 1px solid #d9d9d9;
-            border-radius: 2px;
-            transition: all .3s;
-            flex: 1
-        }
-
-        label {
-            color: #000000d9;
-            font-size: 14px;
-            width: 50px;
-            text-align: right;
-            margin-right: 10px;
-        }
-
         #add-block-page-button {
             color: #fff;
             background: #0170fe;
             font-size: 16px;
             border-radius: 4px;
             border: none;
-            width: 50%;
+        }
+
+        #redirect-block-page-button {
+            color: #fff;
+            background: #0170fe;
+            font-size: 16px;
+            border-radius: 4px;
+            border: none;
         }
 
         #show-page-button {
@@ -139,8 +117,32 @@
             font-weight: bold;
         }
 
-        #submit-icon {
-            margin-top: 30px;
+        button {
+            width: 120px;
+            height: 30px;
+        }
+
+        #block-info-form {
+            width: 100%;
+            height: 100%;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #button-containers {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        #redirect-block-page-button {
+            margin-top: 10px;
         }
 
     </style>
@@ -154,33 +156,29 @@
         <div id="url"></div>
     </div>
     <div id="container-body">
+        <!--if already block this site, should show delete block button-->
         <button id="show-page-button" style="display: none">显示此页面</button>
 
-        <!--TODO: if already block this site, should show delete block button-->
-
-        <form style="display: none" id="block-info-form" name="block-info-form" method="post" class="form-example">
-            <div class="form-example">
-                <label for="messageText">提示语: </label>
-                <input type="text" name="messageText" id="messageText" required>
+        <div style="display: none" id="block-info-form" class="form-example">
+            <div id="button-containers" >
+                <button id="add-block-page-button">拦截此页面</button>
+                <button id="redirect-block-page-button">重定向此页面</button>
             </div>
-            <div class="form-example" id="submit-icon">
-                <input id="add-block-page-button" type="submit" value="拦截此页面!">
-            </div>
-        </form>
+        </div>
     </div>
+
     <div id="footer">
         <div class="footer-icon-container">
             <img class="image-icon" id="active-page-setting" src="/images/block.svg"/>
             <div>当前页面</div>
         </div>
-        <div class="footer-icon-container">
+        <div class="footer-icon-container" id="setting-page">
             <img class="image-icon" src="/images/setting.svg"/>
             <div>插件设置</div>
             </divp>
         </div>
     </div>
-
-
     <script src="index.js"></script>
+</div>
 </body>
 </html>

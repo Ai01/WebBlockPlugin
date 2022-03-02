@@ -1,4 +1,6 @@
 const KEY_FOR_BLOCK_SITES = 'BlockSites';
+const COMMON_MESSAGE = "不是在污染你的脑袋吗？关心这些无关的事情干什么？别做梦了，专心干活";
+const REDIRECT_URL = 'https://github.com/Ai01';
 
 const initBlockSite = () => {
 	// if block site can customize add, storage user's block site
@@ -6,27 +8,27 @@ const initBlockSite = () => {
 		{
 			url: "twitter.com",
 			host: "twitter",
-			message: "twitter 这种社交媒体不是在污染你的脑袋吗？关心这些无关的事情干什么？别做梦了，专心干活"
+			message: COMMON_MESSAGE,
 		},
 		{
 			url: "qidian.com",
 			host: "qidian",
-			message: "小说是别人的造物，别沉迷其中了。别做梦了，专心干活"
+			message: COMMON_MESSAGE,
 		},
 		{
 			url: "weibo.com",
 			host: "weibo",
-			message: "weibo 这种社交媒体不是在污染你的脑袋吗？关心这些无关的事情干什么？别做梦了，专心干活"
+			message: COMMON_MESSAGE,
 		},
 		{
 			url: "bilibili.com",
 			host: "bilibili",
-			message: "bilibili不是在浪费你的时间吗？世界的本质是娱乐吗？"
+			message: COMMON_MESSAGE,
 		},
 		{
 			url: "v2ex.com",
 			host: "v2ex",
-			message: "v2ex不是在浪费你的时间吗？和微博的区别在哪里？"
+			message: COMMON_MESSAGE,
 		}
 	]
 	chrome.storage.sync.set({[KEY_FOR_BLOCK_SITES]: BLOCK_SITE_LIST}, function () {
@@ -61,12 +63,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (method === 'newTab') {
 		// overwrite the html page if site is been blocked
 		activeBlockSites.forEach(i => {
-			const {url, host, message} = i;
+			const {url, host, message, overwrite } = i;
 
 			if ((host && site.indexOf(host) !== -1) || (url && !host && url === site)) {
 				sendResponse({
-					overwrite: true,
-					redirect: 'https://github.com/Ai01',
+					overwrite,
+					redirect: REDIRECT_URL,
 					data: message
 				});
 			}
@@ -74,6 +76,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 
 	if (method === 'addBlockSite') {
+		const {site} = message;
+		activeBlockSites.push({
+			url: site,
+			...message,
+			overwrite: true,
+			message: COMMON_MESSAGE
+		});
+
+		chrome.storage.sync.set({[KEY_FOR_BLOCK_SITES]: activeBlockSites}, function () {
+			console.log('block site update success', activeBlockSites);
+		})
+
+		sendResponse({success: true});
+	}
+
+	if (method === 'addRedirectSite') {
 		const {site} = message;
 		activeBlockSites.push({
 			url: site,
