@@ -7,71 +7,177 @@
     <title>Document</title>
     <style>
         body {
-            width: 300px;
+            width: 250px;
+            padding: 0px;
+            margin: 0px;
+            height: 350px;
+
         }
 
         div.form-example {
             display: flex;
             flex-direction: row;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
             margin-bottom: 10px;
-        }
-
-        #messageText {
-            box-sizing: border-box;
-            margin: 0;
-            font-variant: tabular-nums;
-            list-style: none;
-            font-feature-settings: "tnum";
-            position: relative;
-            display: inline-block;
-            min-width: 0;
-            padding: 4px 11px;
-            color: #000000d9;
-            font-size: 14px;
-            line-height: 1.5715;
-            background-color: #fff;
-            background-image: none;
-            border: 1px solid #d9d9d9;
-            border-radius: 2px;
-            transition: all .3s;
-            flex: 1
-        }
-
-        label {
-            color: #000000d9;
-            font-size: 14px;
-            width: 80px;
-            text-align: right;
-            margin-right: 10px;
         }
 
         #add-block-page-button {
             color: #fff;
             background: #0170fe;
-            font-size: 16px;
             border-radius: 4px;
             border: none;
         }
+
+        #redirect-block-page-button {
+            color: #fff;
+            background: #0170fe;
+            border-radius: 4px;
+            border: none;
+        }
+
+        #show-page-button {
+            color: #fff;
+            background: red;
+            font-size: 14px;
+            border-radius: 4px;
+            border: none;
+            margin-top: 20px;
+        }
+
+        #container {
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+        }
+
+        #header {
+            width: 100%;
+            height: 25%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        #container-body {
+            box-sizing: border-box;
+            width: 100%;
+            height: 60%;
+            padding: 10px 10px;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #footer {
+            width: 100%;
+            height: 15%;
+            box-shadow: 0px -1px .4em grey;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .footer-icon-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .image-icon {
+            width: 25px;
+            height: 25px;
+        }
+
+        #icon {
+            z-index: 1;
+            margin-top: 30px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        #icon-background {
+            background: teal;
+            width: 100%;
+            height: 50px;
+            position: absolute;
+        }
+
+        #url {
+            font-size: large;
+            font-weight: bold;
+        }
+
+        button {
+            height: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0px 20px;
+        }
+
+        #block-info-form {
+            width: 100%;
+            height: 100%;
+        }
+
+        #button-containers {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+
+            padding-top: 20px;
+        }
+
+        #redirect-block-page-button {
+            margin-top: 10px;
+            background: lightseagreen;
+        }
+
     </style>
 </head>
 <body>
-<button id="show-page-button" style="display: none" >显示此页面</button>
 
-<!--TODO: if already block this site, should show delete block button-->
-
-<form style="display: none" id="block-info-form" name="block-info-form" method="post" class="form-example">
-    <div class="form-example">
-        <label for="messageText">提示语: </label>
-        <input type="text" name="messageText" id="messageText" required>
+<div id="container">
+    <div id="header">
+        <div id="icon-background"></div>
+        <div id="icon"></div>
+        <div id="url"></div>
     </div>
-    <div class="form-example">
-        <label for="add-block-page-button"></label>
-        <input id="add-block-page-button" type="submit" value="block此页面!">
-    </div>
-</form>
+    <div id="container-body">
+        <!--if already block this site, should show delete block button-->
+        <button id="show-page-button" style="display: none">显示此页面</button>
 
-<script src="index.js"></script>
+        <div style="display: none" id="block-info-form" class="form-example">
+            <div id="button-containers" >
+                <button id="add-block-page-button">拦截此页面</button>
+                <button id="redirect-block-page-button">重定向此页面</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <div class="footer-icon-container">
+            <img class="image-icon" id="active-page-setting" src="/images/block.svg"/>
+            <div>当前页面</div>
+        </div>
+        <div class="footer-icon-container" id="setting-page">
+            <img class="image-icon" src="/images/setting.svg"/>
+            <div>插件设置</div>
+            </divp>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</div>
 </body>
 </html>

@@ -54,6 +54,25 @@ const judgeIsCurrentPageBlockedOrNot = (currentPageUrl, allBlockedSites) => {
 	}
 }
 
+const setActiveUrlDom = (currentPageUrl) => {
+	if (!currentPageUrl) return;
+	const url = new URL(currentPageUrl);
+
+	const ele = document.getElementById('url');
+	ele.innerHTML = `${url.host}`;
+};
+
+const setFaviconDom = currentPageUrl => {
+	if (!currentPageUrl) return;
+
+	const ele = document.getElementById('icon');
+	const img = document.createElement('img');
+	img.setAttribute('src', `chrome://favicon/size/128@1x/${currentPageUrl}`);
+	img.setAttribute('style', 'width:40px;height:40px;');
+
+	ele.appendChild(img);
+}
+
 // get all been blocked sites url info
 EventCenter.listen(ALL_BLOCKED_SITES, (allBlockedSites) => {
 	EventCenter.setCommonData('allBlockedSites', allBlockedSites);
@@ -62,7 +81,7 @@ EventCenter.listen(ALL_BLOCKED_SITES, (allBlockedSites) => {
 	judgeIsCurrentPageBlockedOrNot(currentPageUrl, allBlockedSites);
 });
 chrome.runtime.sendMessage({method: 'getAllBlockedSites'}, (response) => {
-	console.log('response', response);
+	console.log('response for all', response);
 	const {allBlockedSites} = response || {};
 	if (Array.isArray(allBlockedSites)) {
 		EventCenter.fire(ALL_BLOCKED_SITES, allBlockedSites);
@@ -73,6 +92,9 @@ chrome.runtime.sendMessage({method: 'getAllBlockedSites'}, (response) => {
 // get the url of tab, window.location is the id for chrome extension
 EventCenter.listen(GET_PAGE_URL, (currentPageUrl) => {
 	EventCenter.setCommonData('currentPageUrl', currentPageUrl);
+
+	setActiveUrlDom(currentPageUrl);
+	setFaviconDom(currentPageUrl);
 
 	const {allBlockedSites} = EventCenter.commonData;
 	judgeIsCurrentPageBlockedOrNot(currentPageUrl, allBlockedSites);
@@ -123,9 +145,8 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 	const showPageButton = document.getElementById('show-page-button');
 	showPageButton.setAttribute('style', 'display:none');
 
-
-	formEle.addEventListener('submit', () => {
-		const messageText = document.forms["block-info-form"]["messageText"].value;
+	const addBlockButton = document.getElementById('add-block-page-button');
+	addBlockButton.addEventListener('click', () => {
 		const {currentPageUrl} = EventCenter.commonData;
 		const host = new URL(currentPageUrl).host.toString();
 
@@ -133,9 +154,7 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 			method: 'addBlockSite',
 			site: currentPageUrl,
 			host,
-			message: messageText
 		}, (response) => {
-			console.log('removeBlockSite', response);
 			const {success} = response;
 			if (success) {
 				// refresh current tab
@@ -147,4 +166,32 @@ EventCenter.listen(CURRENT_PAGE_NOT_BEEN_BLOCKED, () => {
 		});
 	});
 
+	const addRedirectButton = document.getElementById('redirect-block-page-button');
+	addRedirectButton.addEventListener('click', () => {
+		const {currentPageUrl} = EventCenter.commonData;
+		const host = new URL(currentPageUrl).host.toString();
+
+		chrome.runtime.sendMessage({
+			method: 'addRedirectSite',
+			site: currentPageUrl,
+			host,
+		}, (response) => {
+			const {success} = response;
+			if (success) {
+				// refresh current tab
+				chrome.tabs.reload();
+
+				// refresh popup
+				window.location.reload();
+			}
+		});
+	})
+
+})
+
+
+// setting page
+const settingEle = document.getElementById("setting-page");
+settingEle.addEventListener('click', () => {
+	window.open('/options.html');
 })
