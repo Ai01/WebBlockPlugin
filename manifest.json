@@ -1,5 +1,5 @@
 {
-  "name": "chrome-plugin-demo",
+  "name": "注意力",
   "version": "1.0",
   "description": "Build an Extension!",
   "manifest_version": 2,
@@ -25,6 +25,7 @@
       "run_at": "document_start"
     }
   ],
+  "content_security_policy": "script-src 'self' https://unpkg.com; object-src 'self'",
   "permissions": [
     "tabs",
     "storage",

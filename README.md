@@ -42,3 +42,9 @@ webBlockPlugin
 重写页面内容：https://stackoverflow.com/questions/57812809/replacing-the-entire-html-document-of-a-website-from-a-chrome-extension
 
 竞品: https://chrome.google.com/webstore/detail/blocksite-block-websites/eiimnmioipafcokbfikbljfdeojpcgbh/related?hl=en&
+
+无法使用inlineJs： https://stackoverflow.com/questions/16145522/chrome-showing-error-as-refused-to-execute-inline-script-because-of-content-sec
+
+content_security_policy: 如何使用script标签引入其他host的js
+
+利用react cdn资源使用react: https://gist.github.com/gaearon/6668a1f6986742109c00a581ce704605
