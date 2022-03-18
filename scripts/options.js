@@ -5,10 +5,94 @@ const {createElement, Component} = React || {};
 class BlockSetPanel extends Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			tipText: null,
+			changeResult: null,
+		}
+	}
+
+	componentDidMount() {
+		chrome.runtime.sendMessage({
+			method: 'getBlockMessage',
+		}, (response) => {
+			const {blockMessage} = response;
+
+			this.setState({tipText: blockMessage || null, changeResult: null});
+		});
 	}
 
 	render() {
-		return createElement('div', {}, ['block']);
+		return createElement('div', {},
+		  [
+			  createElement('div', {
+				  style: {
+					  fontSize: '24px',
+					  lineHeight: 1.71,
+					  fontWeight: 'bold',
+					  color: 'rgb(38,38,38)',
+					  minWidth: '109px'
+				  }
+			  }, '设置拦截文本：'),
+			  createElement('div', {
+				  style: {
+					  fontSize: '14px',
+					  lineHeight: 1.71,
+					  color: 'rgb(166,166,166)',
+				  }
+			  }, '该文本会在网页被拦截的时候显示，作为提示'),
+			  createElement('textarea', {
+					style: {
+						width: '700px',
+						height: '100px',
+						outline: 'none',
+						marginTop: '10px',
+						resize: 'none',
+						padding: '15px',
+						border: '1px solid #0170fe',
+						borderRadius: '12px',
+						boxShadow: 'rgb(255,255,255) 0px 0px 3pt 2pt'
+					},
+					rows: 4,
+					cols: 50,
+					value: this.state.tipText,
+					onChange: e => {
+						const v = e.target.value;
+						this.setState({tipText: v, changeResult: null})
+					}
+				},
+			  ),
+			  createElement('div', {
+				  style: {
+					  background: 'rgb(60,193,150)',
+					  fontSize: '14px',
+					  fontWeight: 'bold',
+					  marginTop: '10px',
+					  color: 'white',
+					  display: 'block',
+					  padding: '12px 24px',
+					  borderRadius: '8px',
+					  width: 'fit-content',
+					  cursor: 'pointer'
+				  },
+				  onClick: () => {
+					  chrome.runtime.sendMessage({
+						  method: 'setBlockMessage',
+						  blockMessage: this.state.tipText
+					  }, (response) => {
+						  console.log('response for setBlockMessage', response);
+						  this.setState({changeResult: response ? response.success : null})
+					  });
+				  }
+			  }, '保存拦截文本'),
+			  createElement('div', {
+				  style: {
+					  color: '#faad14',
+					  fontSize: '12px',
+					  marginTop: '10px'
+				  }
+			  }, this.state.changeResult ? '修改成功' : null)
+		  ]
+		);
 	}
 }
 
@@ -191,7 +275,7 @@ class Layout extends Component {
 					  },
 					  [createElement(Menu, {list: menuList, defaultActive: this.state.activeValue})]
 					),
-					createElement('div', {style: {width: '100%', height: '100%'}},
+					createElement('div', {style: {width: '100%', height: '100%', padding: '56px'}},
 					  [
 						  this.state.settingPanel ? createElement(this.state.settingPanel) : null
 					  ]

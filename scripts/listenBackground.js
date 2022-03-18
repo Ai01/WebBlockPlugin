@@ -1,5 +1,5 @@
 const KEY_FOR_BLOCK_SITES = 'BlockSites';
-const COMMON_MESSAGE = "不是在污染你的脑袋吗？关心这些无关的事情干什么？别做梦了，专心干活";
+const KEY_FOR_BLOCK_MESSAGE = 'key_for_block_messages_xxxxy';
 const REDIRECT_URL = 'https://github.com/Ai01';
 
 const initBlockSite = () => {
@@ -8,31 +8,31 @@ const initBlockSite = () => {
 		{
 			url: "twitter.com",
 			host: "twitter",
-			message: COMMON_MESSAGE,
 		},
 		{
 			url: "qidian.com",
 			host: "qidian",
-			message: COMMON_MESSAGE,
 		},
 		{
 			url: "weibo.com",
 			host: "weibo",
-			message: COMMON_MESSAGE,
 		},
 		{
 			url: "bilibili.com",
 			host: "bilibili",
-			message: COMMON_MESSAGE,
 		},
 		{
 			url: "v2ex.com",
 			host: "v2ex",
-			message: COMMON_MESSAGE,
 		}
 	]
 	chrome.storage.sync.set({[KEY_FOR_BLOCK_SITES]: BLOCK_SITE_LIST}, function () {
 		console.log('block site init success', BLOCK_SITE_LIST);
+	})
+
+	const COMMON_MESSAGE = "千金难买寸光阴";
+	chrome.storage.sync.set({[KEY_FOR_BLOCK_MESSAGE]: COMMON_MESSAGE}, function () {
+		console.log('block message init success', COMMON_MESSAGE);
 	})
 }
 
@@ -53,6 +53,11 @@ const getStorageSyncData = (name) => {
 let activeBlockSites;
 getStorageSyncData(KEY_FOR_BLOCK_SITES).then((blockSites) => {
 	activeBlockSites = blockSites;
+});
+
+let tipMessage;
+getStorageSyncData(KEY_FOR_BLOCK_MESSAGE).then(message => {
+	tipMessage = message;
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -81,7 +86,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			url: site,
 			...message,
 			overwrite: true,
-			message: COMMON_MESSAGE
+			message: tipMessage
 		});
 
 		chrome.storage.sync.set({[KEY_FOR_BLOCK_SITES]: activeBlockSites}, function () {
@@ -89,6 +94,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		})
 
 		sendResponse({success: true});
+	}
+
+	if(method === 'setBlockMessage') {
+		const {blockMessage} = message;
+		if(!blockMessage) return;
+
+		chrome.storage.sync.set({[KEY_FOR_BLOCK_MESSAGE]: blockMessage}, function () {
+			console.log('block message update success', blockMessage);
+			tipMessage = blockMessage;
+		})
+
+		sendResponse({success: true});
+	}
+
+	if(method === 'getBlockMessage') {
+		sendResponse({blockMessage: tipMessage});
 	}
 
 	if (method === 'addRedirectSite') {
