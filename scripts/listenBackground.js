@@ -1,6 +1,6 @@
 const KEY_FOR_BLOCK_SITES = 'BlockSites';
 const KEY_FOR_BLOCK_MESSAGE = 'key_for_block_messages_xxxxy';
-const REDIRECT_URL = 'https://github.com/Ai01';
+const KEY_FOR_REDIRECT_URL = 'key_for_redirect_url';
 
 const initBlockSite = () => {
 	// if block site can customize add, storage user's block site
@@ -34,6 +34,11 @@ const initBlockSite = () => {
 	chrome.storage.sync.set({[KEY_FOR_BLOCK_MESSAGE]: COMMON_MESSAGE}, function () {
 		console.log('block message init success', COMMON_MESSAGE);
 	})
+
+	const DEFAULT_REDIRECT_URL= 'https://github.com';
+	chrome.storage.sync.set({[KEY_FOR_REDIRECT_URL]: DEFAULT_REDIRECT_URL}, function () {
+		console.log('block message init success', DEFAULT_REDIRECT_URL);
+	})
 }
 
 initBlockSite();
@@ -60,6 +65,11 @@ getStorageSyncData(KEY_FOR_BLOCK_MESSAGE).then(message => {
 	tipMessage = message;
 });
 
+let redirectUrl;
+getStorageSyncData(KEY_FOR_REDIRECT_URL).then(url => {
+	redirectUrl = url;
+})
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	console.log('onMessage', message);
 
@@ -73,7 +83,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			if ((host && site.indexOf(host) !== -1) || (url && !host && url === site)) {
 				sendResponse({
 					overwrite,
-					redirect: REDIRECT_URL,
+					redirect: redirectUrl,
 					data: message
 				});
 			}
@@ -110,6 +120,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if(method === 'getBlockMessage') {
 		sendResponse({blockMessage: tipMessage});
+	}
+
+	if(method === 'setRedirectUrl') {
+		const {redirectUrl: newRedirectUrl} = message;
+		if(!newRedirectUrl) return;
+
+		chrome.storage.sync.set({[KEY_FOR_REDIRECT_URL]: newRedirectUrl}, function () {
+			console.log('redirect url update success', newRedirectUrl);
+			redirectUrl = newRedirectUrl;
+		})
+
+		sendResponse({success: true});
+	}
+
+	if(method === 'getRedirectUrl') {
+		sendResponse({redirectUrl: redirectUrl});
 	}
 
 	if (method === 'addRedirectSite') {
