@@ -1,24 +1,29 @@
 # WebBlockPlugin
-webBlockPlugin
+用来阻止浏览网页的chrome浏览器插件
 
-## finished feature
 
-* block 页面
-* 添加当前页面到block中
-* 添加block网站的ui
-* 删除block的网站
-* icon
-* 数据存储
-* 重定向，对于被block的网站，可以选择重定向或者提示
-* 在popup页面加上网页的信息
-* 将解锁网站的功能放到编辑页面中
+![pop页面](./images/popup.jpeg)
+
+### 拦截页面
+
+![拦截页面展示](./images/overwrite.jpeg)
+![拦截设置页面](./images/block.jpeg)
+
+### 重定向页面
+
+![重定向设置页面](./images/redirectSet.jpeg)
+
+## 支持功能
+
+* 拦截页面,并重写为对应的文本
+* 重定向页面到制定页面
 
 ### mvp功能
 
 * 联系开发者: 使用腾讯开源社群产品
 * 重定向的页面不能拦截
 
-### 附加功能
+### 附加功能(并不一定会做)
 
 * 上网行为分析
 * 设置block的时间段 
