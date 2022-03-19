@@ -1,38 +1,43 @@
 const KEY_FOR_BLOCK_SITES = 'BlockSites';
-const COMMON_MESSAGE = "不是在污染你的脑袋吗？关心这些无关的事情干什么？别做梦了，专心干活";
-const REDIRECT_URL = 'https://github.com/Ai01';
+const KEY_FOR_BLOCK_MESSAGE = 'key_for_block_messages_xxxxy';
+const KEY_FOR_REDIRECT_URL = 'key_for_redirect_url';
 
 const initBlockSite = () => {
 	// if block site can customize add, storage user's block site
 	const BLOCK_SITE_LIST = [
 		{
-			url: "twitter.com",
+			url: "https://twitter.com",
 			host: "twitter",
-			message: COMMON_MESSAGE,
 		},
 		{
-			url: "qidian.com",
+			url: "https://qidian.com",
 			host: "qidian",
-			message: COMMON_MESSAGE,
 		},
 		{
-			url: "weibo.com",
+			url: "https://weibo.com",
 			host: "weibo",
-			message: COMMON_MESSAGE,
 		},
 		{
-			url: "bilibili.com",
+			url: "https://bilibili.com",
 			host: "bilibili",
-			message: COMMON_MESSAGE,
 		},
 		{
-			url: "v2ex.com",
+			url: "https://v2ex.com",
 			host: "v2ex",
-			message: COMMON_MESSAGE,
 		}
 	]
 	chrome.storage.sync.set({[KEY_FOR_BLOCK_SITES]: BLOCK_SITE_LIST}, function () {
 		console.log('block site init success', BLOCK_SITE_LIST);
+	})
+
+	const COMMON_MESSAGE = "千金难买寸光阴";
+	chrome.storage.sync.set({[KEY_FOR_BLOCK_MESSAGE]: COMMON_MESSAGE}, function () {
+		console.log('block message init success', COMMON_MESSAGE);
+	})
+
+	const DEFAULT_REDIRECT_URL= 'https://github.com';
+	chrome.storage.sync.set({[KEY_FOR_REDIRECT_URL]: DEFAULT_REDIRECT_URL}, function () {
+		console.log('block message init success', DEFAULT_REDIRECT_URL);
 	})
 }
 
@@ -55,6 +60,16 @@ getStorageSyncData(KEY_FOR_BLOCK_SITES).then((blockSites) => {
 	activeBlockSites = blockSites;
 });
 
+let tipMessage;
+getStorageSyncData(KEY_FOR_BLOCK_MESSAGE).then(message => {
+	tipMessage = message;
+});
+
+let redirectUrl;
+getStorageSyncData(KEY_FOR_REDIRECT_URL).then(url => {
+	redirectUrl = url;
+})
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	console.log('onMessage', message);
 
@@ -68,7 +83,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			if ((host && site.indexOf(host) !== -1) || (url && !host && url === site)) {
 				sendResponse({
 					overwrite,
-					redirect: REDIRECT_URL,
+					redirect: redirectUrl,
 					data: message
 				});
 			}
@@ -81,7 +96,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			url: site,
 			...message,
 			overwrite: true,
-			message: COMMON_MESSAGE
+			message: tipMessage
 		});
 
 		chrome.storage.sync.set({[KEY_FOR_BLOCK_SITES]: activeBlockSites}, function () {
@@ -89,6 +104,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		})
 
 		sendResponse({success: true});
+	}
+
+	if(method === 'setBlockMessage') {
+		const {blockMessage} = message;
+		if(!blockMessage) return;
+
+		chrome.storage.sync.set({[KEY_FOR_BLOCK_MESSAGE]: blockMessage}, function () {
+			console.log('block message update success', blockMessage);
+			tipMessage = blockMessage;
+		})
+
+		sendResponse({success: true});
+	}
+
+	if(method === 'getBlockMessage') {
+		sendResponse({blockMessage: tipMessage});
+	}
+
+	if(method === 'setRedirectUrl') {
+		const {redirectUrl: newRedirectUrl} = message;
+		if(!newRedirectUrl) return;
+
+		chrome.storage.sync.set({[KEY_FOR_REDIRECT_URL]: newRedirectUrl}, function () {
+			console.log('redirect url update success', newRedirectUrl);
+			redirectUrl = newRedirectUrl;
+		})
+
+		sendResponse({success: true});
+	}
+
+	if(method === 'getRedirectUrl') {
+		sendResponse({redirectUrl: redirectUrl});
 	}
 
 	if (method === 'addRedirectSite') {
@@ -108,11 +155,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (method === 'removeBlockSite') {
 		const {site: siteToRemove, host: hostToRemove} = message;
 
-
 		let removeIndex = -1;
 		activeBlockSites.forEach((i, index) => {
-			const {site, host} = i || {};
-			if (site === siteToRemove || host === hostToRemove) {
+			const {url, host} = i || {};
+			if (url === siteToRemove || host === hostToRemove) {
 				removeIndex = index;
 			}
 		})
@@ -124,7 +170,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			console.log('block site update success', activeBlockSites);
 		})
 
-		sendResponse({success: true});
+		sendResponse({success: true, allBlockedSites: activeBlockSites});
 	}
 
 	if (method === 'getAllBlockedSites') {
