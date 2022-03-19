@@ -2,6 +2,107 @@
 
 const {createElement, Component} = React || {};
 
+class SitesList extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			list: []
+		}
+	}
+
+	componentDidMount() {
+		chrome.runtime.sendMessage({
+			method: 'getAllBlockedSites',
+		}, (response) => {
+			const {allBlockedSites} = response;
+
+			this.setState({list: allBlockedSites || []});
+		});
+	}
+
+	render() {
+		const {list} = this.state;
+		const {redirect, overwrite} = this.props;
+
+		const redirectSites = Array.isArray(list) ? list.filter(i => {
+			if (redirect) {
+				return i && !i.overwrite
+			}
+			if (overwrite) {
+				return i && i.overwrite
+			}
+		}).map(i => {
+			const {url} = i || {};
+			return createElement('div',
+			  {
+				  style: {
+					  padding: '12px 18px 12px 12px',
+					  background: 'white',
+					  fontSize: '14px',
+					  display: 'flex',
+					  flexDirection: 'row',
+					  alignItems: 'center',
+					  justifyContent: 'space-between'
+				  }
+			  },
+			  [
+				  createElement('div', {
+					  style: {
+						  display: 'flex'
+					  }
+				  }, [
+					  createElement('img', {
+						  src: `chrome://favicon/size/128@1x/${url}`,
+						  style: {
+							  width: '24px',
+							  height: '24px',
+							  border: '1px solid rgb(224,224,224)',
+							  borderRadius: '4px',
+							  padding: '2px'
+						  }
+					  }),
+					  createElement('div', {style: {marginLeft: 10}}, url)
+				  ]),
+				  createElement('img', {
+					  src: './images/delete.svg',
+					  style: {cursor: 'pointer'},
+					  onClick: () => {
+						  chrome.runtime.sendMessage({
+							  method: 'removeBlockSite',
+							  site: url
+						  }, (response) => {
+							  const {allBlockedSites} = response;
+							  console.log('test', response);
+
+							  this.setState({list: allBlockedSites || []});
+						  });
+					  }
+				  })
+			  ]
+			);
+		}) : [];
+
+		return createElement('div', {
+			style: {
+				border: '1px solid rgb(224,224,224)',
+				borderRadius: '12px',
+				padding: '8px',
+				marginTop: 30,
+				maxWidth: 800,
+				overflow: 'hidden',
+			}
+		}, redirectSites.length > 0 ? redirectSites :
+		  createElement('div', {
+			  style: {
+				  color: 'black',
+				  fontSize: '14px',
+				  fontWeight: 'bold'
+			  }
+		  }, '请添加网页')
+		);
+	}
+}
+
 class BlockSetPanel extends Component {
 	constructor(props) {
 		super(props);
@@ -89,13 +190,14 @@ class BlockSetPanel extends Component {
 					  fontSize: '12px',
 					  marginTop: '10px'
 				  }
-			  }, this.state.changeResult ? '修改成功' : null)
+			  }, this.state.changeResult ? '修改成功' : null),
+			  createElement(SitesList, {overwrite: true}),
 		  ]
 		);
 	}
 }
 
-class RewritePanel extends Component {
+class RedirectPanel extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -178,7 +280,8 @@ class RewritePanel extends Component {
 					fontSize: '12px',
 					marginTop: '10px'
 				}
-			}, this.state.changeResult ? '修改成功' : null)
+			}, this.state.changeResult ? '修改成功' : null),
+			createElement(SitesList, {redirect: true}),
 		]);
 	}
 }
@@ -298,7 +401,7 @@ class Layout extends Component {
 			cbForClick: (value) => {
 				this.setState({
 					activeValue: value,
-					settingPanel: RewritePanel
+					settingPanel: RedirectPanel
 				});
 			}
 		}]

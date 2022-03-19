@@ -6,23 +6,23 @@ const initBlockSite = () => {
 	// if block site can customize add, storage user's block site
 	const BLOCK_SITE_LIST = [
 		{
-			url: "twitter.com",
+			url: "https://twitter.com",
 			host: "twitter",
 		},
 		{
-			url: "qidian.com",
+			url: "https://qidian.com",
 			host: "qidian",
 		},
 		{
-			url: "weibo.com",
+			url: "https://weibo.com",
 			host: "weibo",
 		},
 		{
-			url: "bilibili.com",
+			url: "https://bilibili.com",
 			host: "bilibili",
 		},
 		{
-			url: "v2ex.com",
+			url: "https://v2ex.com",
 			host: "v2ex",
 		}
 	]
@@ -155,11 +155,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (method === 'removeBlockSite') {
 		const {site: siteToRemove, host: hostToRemove} = message;
 
-
 		let removeIndex = -1;
 		activeBlockSites.forEach((i, index) => {
-			const {site, host} = i || {};
-			if (site === siteToRemove || host === hostToRemove) {
+			const {url, host} = i || {};
+			if (url === siteToRemove || host === hostToRemove) {
 				removeIndex = index;
 			}
 		})
@@ -171,7 +170,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			console.log('block site update success', activeBlockSites);
 		})
 
-		sendResponse({success: true});
+		sendResponse({success: true, allBlockedSites: activeBlockSites});
 	}
 
 	if (method === 'getAllBlockedSites') {
