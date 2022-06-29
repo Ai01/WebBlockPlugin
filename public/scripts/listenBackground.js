@@ -24,6 +24,14 @@ const initBlockSite = () => {
 		{
 			url: "https://v2ex.com",
 			host: "v2ex",
+		},
+		{
+			url: "https://douyu.com",
+			host: "douyu",
+		},
+		{
+			url: "https://youtube.com",
+			host: "youtube"
 		}
 	]
 	chrome.storage.sync.set({[KEY_FOR_BLOCK_SITES]: BLOCK_SITE_LIST}, function () {
