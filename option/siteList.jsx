@@ -12,6 +12,7 @@ export const SitesList = (props) => {
       (response) => {
         const { allBlockedSites } = response;
 
+        // todo: 区分overwrite和redirect
         setList(allBlockedSites || []);
       }
     );
@@ -39,7 +40,7 @@ export const SitesList = (props) => {
             }
           })
           .map((i) => {
-            const { url } = i || {};
+            const { url, belling } = i || {};
 
             return (
               <div
@@ -66,24 +67,45 @@ export const SitesList = (props) => {
                   />
                   <div style={{ marginLeft: 10 }}>{url}</div>
                 </div>
-                <img
-                  src={"./images/delete.svg"}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    chrome.runtime.sendMessage(
-                      {
-                        method: "removeBlockSite",
-                        site: url,
-                      },
-                      (response) => {
-                        const { allBlockedSites } = response;
-                        console.log("test", response);
+                {belling ? (
+                  <img
+                    src={"./images/block.svg"}
+                    style={{ cursor: "pointer", width: 24, height: 24 }}
+                    onClick={() => {
+                      chrome.runtime.sendMessage(
+                        {
+                          method: "noBellBlockSite",
+                          site: url,
+                        },
+                        (response) => {
+                          const { allBlockedSites } = response;
+                          console.log("test", response);
 
-                        setList(allBlockedSites || []);
-                      }
-                    );
-                  }}
-                />
+                          setList(allBlockedSites || []);
+                        }
+                      );
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={"./images/bell.svg"}
+                    style={{ cursor: "pointer", width: 24, height: 24 }}
+                    onClick={() => {
+                      chrome.runtime.sendMessage(
+                        {
+                          method: "bellBlockSite",
+                          site: url,
+                        },
+                        (response) => {
+                          const { allBlockedSites } = response;
+                          console.log("test", response);
+
+                          setList(allBlockedSites || []);
+                        }
+                      );
+                    }}
+                  />
+                )}
               </div>
             );
           })

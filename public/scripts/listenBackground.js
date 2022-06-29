@@ -3,35 +3,44 @@ const KEY_FOR_BLOCK_MESSAGE = "key_for_block_messages_xxxxy";
 const KEY_FOR_REDIRECT_URL = "key_for_redirect_url";
 
 const initBlockSite = () => {
+  const COMMON_MESSAGE = "千金难买寸光阴";
+
   // if block site can customize add, storage user's block site
   const BLOCK_SITE_LIST = [
     {
       url: "https://twitter.com",
       host: "twitter",
+      message: COMMON_MESSAGE,
     },
     {
       url: "https://qidian.com",
       host: "qidian",
+      message: COMMON_MESSAGE,
     },
     {
       url: "https://weibo.com",
       host: "weibo",
+      message: COMMON_MESSAGE,
     },
     {
       url: "https://bilibili.com",
       host: "bilibili",
+      message: COMMON_MESSAGE,
     },
     {
       url: "https://v2ex.com",
       host: "v2ex",
+      message: COMMON_MESSAGE,
     },
     {
       url: "https://douyu.com",
       host: "douyu",
+      message: COMMON_MESSAGE,
     },
     {
       url: "https://youtube.com",
       host: "youtube",
+      message: COMMON_MESSAGE,
     },
   ];
   chrome.storage.sync.set(
@@ -41,7 +50,6 @@ const initBlockSite = () => {
     }
   );
 
-  const COMMON_MESSAGE = "千金难买寸光阴";
   chrome.storage.sync.set(
     { [KEY_FOR_BLOCK_MESSAGE]: COMMON_MESSAGE },
     function () {
@@ -94,7 +102,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (method === "newTab") {
     // overwrite the html page if site is been blocked
     activeBlockSites.forEach((i) => {
-      const { url, host, message, overwrite } = i;
+      const { url, host, message, overwrite, belling } = i;
 
       if (
         (host && site.indexOf(host) !== -1) ||
@@ -103,6 +111,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({
           overwrite,
           redirect: redirectUrl,
+          belling,
           data: message,
         });
       }
@@ -183,19 +192,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true });
   }
 
-  if (method === "removeBlockSite") {
+  if (method === "bellBlockSite") {
     const { site: siteToRemove, host: hostToRemove } = message;
 
-    let removeIndex = -1;
-    activeBlockSites.forEach((i, index) => {
+    activeBlockSites = activeBlockSites.map((i) => {
       const { url, host } = i || {};
       if (url === siteToRemove || host === hostToRemove) {
-        removeIndex = index;
+        i.belling = true;
       }
+      return i;
     });
 
-    activeBlockSites[removeIndex] = null;
-    activeBlockSites = activeBlockSites.filter((i) => !!i);
+    chrome.storage.sync.set(
+      { [KEY_FOR_BLOCK_SITES]: activeBlockSites },
+      function () {
+        console.log("block site update success", activeBlockSites);
+      }
+    );
+
+    sendResponse({ success: true, allBlockedSites: activeBlockSites });
+  }
+
+  if (method === "noBellBlockSite") {
+    const { site: siteToRemove, host: hostToRemove } = message;
+
+    activeBlockSites = activeBlockSites.map((i) => {
+      const { url, host } = i || {};
+      if (url === siteToRemove || host === hostToRemove) {
+        i.belling = false;
+      }
+      return i;
+    });
 
     chrome.storage.sync.set(
       { [KEY_FOR_BLOCK_SITES]: activeBlockSites },

@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const path = require("path");
+const chokidar = require("chokidar");
 
 const copyPublicFolder = () => {
   fs.copySync(
@@ -11,5 +12,6 @@ const copyPublicFolder = () => {
   );
 };
 
-copyPublicFolder();
-process.exit();
+chokidar.watch(".").add('./scripts').on("all", (event, path) => {
+  copyPublicFolder();
+});
