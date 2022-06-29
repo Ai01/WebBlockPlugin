@@ -1,4 +1,5 @@
-'use strict';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 const {createElement, Component} = React || {};
 
@@ -480,4 +481,3 @@ class App extends Component {
 const domContainer = document.querySelector('#root');
 
 ReactDOM.render(createElement(App), domContainer);
-
