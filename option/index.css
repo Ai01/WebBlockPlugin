@@ -1,1 +1,5 @@
 @import '~antd/dist/antd.css';
+
+.left-menu > .ant-menu-inline, .ant-menu-vertical, .ant-menu-vertical-left {
+    border-right: none !important;
+}

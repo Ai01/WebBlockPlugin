@@ -34,7 +34,7 @@ export const BlockPanel = () => {
     <div>
       <div
         style={{
-          fontSize: "24px",
+          fontSize: "20px",
           lineHeight: 1.71,
           fontWeight: "bold",
           color: "rgb(38,38,38)",
@@ -86,7 +86,7 @@ export const BlockPanel = () => {
 
       <div
         style={{
-          fontSize: "24px",
+          fontSize: "20px",
           lineHeight: 1.71,
           fontWeight: "bold",
           color: "rgb(38,38,38)",

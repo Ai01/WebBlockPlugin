@@ -32,7 +32,7 @@ const LeftMenu = (props) => {
     <Menu
       style={{
         width: 260,
-        height: "100%",
+        height: "100vh",
       }}
       defaultSelectedKeys={[defaultActive]}
       mode="inline"
@@ -65,24 +65,29 @@ const App = () => {
     getItem(
       "拦截设置",
       valueForBlock,
-      <EyeInvisibleTwoTone style={{ fontSize: 16 }} twoToneColor="#eb2f96" />
+      <EyeInvisibleTwoTone
+        style={{ fontSize: 16 }}
+        twoToneColor={activeValue === valueForBlock ? "#1fb2aa" : "#1890ff"}
+      />
     ),
     getItem(
       "关于",
       valueForAbout,
-      <QuestionCircleTwoTone style={{ fontSize: 16 }} twoToneColor="#52c41a" />
+      <QuestionCircleTwoTone
+        style={{ fontSize: 16 }}
+        twoToneColor={activeValue === valueForAbout ? "#1fb2aa" : "#1890ff"}
+      />
     ),
   ];
 
   return (
     <div
       style={{
-        width: "100%",
         height: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "stretch",
       }}
     >
       <div
@@ -101,14 +106,14 @@ const App = () => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "stretch",
         }}
       >
         <div
           style={{
             width: "260px",
-            height: "100%",
           }}
+          className="left-menu"
         >
           <LeftMenu
             cbForClick={({ key }) => {
@@ -118,7 +123,13 @@ const App = () => {
             defaultActive={activeValue}
           />
         </div>
-        <div style={{ width: "100%", height: "100%", padding: "56px" }}>
+        <div
+          style={{
+            width: "100%",
+            padding: "56px",
+            borderLeft: '1px solid #f0f0f0'
+          }}
+        >
           {activeValue === valueForBlock ? <BlockPanel /> : null}
         </div>
       </div>
