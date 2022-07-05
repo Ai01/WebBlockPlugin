@@ -32,9 +32,10 @@ export const SitesList = (props) => {
           <div style={{ display: "flex" }}>
             <FaviconImage
               imageList={[
-                `http://www.google.com/s2/favicons?domain=${url}`,
+                `http://www.google.com/s2/favicons?domain=${url}&sz=128`,
+                `http://www.google.com/s2/favicons?domain=${url}&sz=16`,
                 `${url}/favicon.ico`,
-                `chrome://favicon/${url}`,
+                `chrome://favicon/size/128@1x/${url}`,
               ]}
               style={{
                 width: "24px",
