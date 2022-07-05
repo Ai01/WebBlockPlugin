@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import { FaviconImage } from "../option/FaviconImage.jsx";
 import "./index.css";
 
 const Popup = () => {
@@ -61,9 +62,14 @@ const Popup = () => {
         <div id="icon-background"></div>
         <div id="icon">
           {currentPageUrl ? (
-            <img
+            <FaviconImage
+              imageList={[
+                `http://www.google.com/s2/favicons?domain=${currentPageUrl}&sz=128`,
+                `http://www.google.com/s2/favicons?domain=${currentPageUrl}&sz=16`,
+                `${currentPageUrl}/favicon.ico`,
+                `chrome://favicon/size/128@1x/${currentPageUrl}`,
+              ]}
               style={{ width: "40px", height: "40px" }}
-              src={`chrome://favicon/size/128@1x/${currentPageUrl}`}
             />
           ) : null}
         </div>
@@ -148,14 +154,6 @@ const Popup = () => {
       </div>
 
       <div id="footer">
-        <div class="footer-icon-container">
-          <img
-            class="image-icon"
-            id="active-page-setting"
-            src="/images/block.svg"
-          />
-          <div>当前页面</div>
-        </div>
         <div
           class="footer-icon-container"
           id="setting-page"

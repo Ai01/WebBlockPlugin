@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const generateCommonConfig = (env) => {
   return {
+    mode: 'production',
     output: {
       path: path.resolve(__dirname, "dist"),
       filename: "[name].bundle.js",
