@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Empty, Radio, Checkbox, message } from "antd";
+import { FaviconImage } from "./FaviconImage.jsx";
 
 export const SitesList = (props) => {
   const [list, setList] = useState([]);
@@ -26,10 +27,15 @@ export const SitesList = (props) => {
       dataIndex: "url",
       key: "url",
       render: (url) => {
+        // https://superuser.com/questions/157925/how-to-download-favicon-from-website
         return (
           <div style={{ display: "flex" }}>
-            <img
-              src={`chrome://favicon/size/128@1x/${url}`}
+            <FaviconImage
+              imageList={[
+                `http://www.google.com/s2/favicons?domain=${url}`,
+                `${url}/favicon.ico`,
+                `chrome://favicon/${url}`,
+              ]}
               style={{
                 width: "24px",
                 height: "24px",
