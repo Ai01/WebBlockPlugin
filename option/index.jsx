@@ -127,7 +127,7 @@ const App = () => {
           style={{
             width: "100%",
             padding: "56px",
-            borderLeft: '1px solid #f0f0f0'
+            borderLeft: "1px solid #f0f0f0",
           }}
         >
           {activeValue === valueForBlock ? <BlockPanel /> : null}

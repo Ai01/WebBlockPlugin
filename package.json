@@ -4,7 +4,7 @@
   "description": "用来阻止浏览网页的chrome浏览器插件。目的是让使用 浏览器的时候更多的将注意力放到重要的页面上而不是被娱乐内容带歪了。",
   "main": "index.js",
   "scripts": {
-    "dev": "node ./copyPublicFolderWatch.js & webpack --watch",
+    "dev": "node ./copyPublicFolderWatch.js & webpack --watch --mode production",
     "build": "node ./copyPublicFolder.js & webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
