@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import { Menu } from "antd";
+import { QuestionCircleTwoTone, EyeInvisibleTwoTone } from "@ant-design/icons";
 import "./index.css";
 
 import { BlockPanel } from "./blockPanel.jsx";
@@ -23,60 +25,53 @@ const Header = () => {
   );
 };
 
-const Menu = (props) => {
-  const { list, defaultActive } = props;
-  const [activeValue, setActiveValue] = useState(defaultActive);
+const LeftMenu = (props) => {
+  const { items, defaultActive, cbForClick } = props;
 
   return (
-    <div style={{ padding: "12px" }}>
-      {Array.isArray(list)
-        ? list.map((i) => {
-            const { name, value, cbForClick } = i || {};
-            return (
-              <div
-                onClick={() => {
-                  setActiveValue(value);
-                  if (typeof cbForClick === "function") {
-                    cbForClick(value);
-                  }
-                }}
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  color: "rgb(33, 33, 33)",
-                  height: "48px",
-                  lineHeight: "24px",
-                  padding: "14px",
-                  backgroundColor:
-                    activeValue === value
-                      ? "rgb(245,245,245)"
-                      : "rgb(255,255,255)",
-                  borderRadius: activeValue === value ? "8px" : 0,
-                  cursor: "pointer",
-                  boxSizing: "border-box",
-                }}
-              >
-                {name}
-              </div>
-            );
-          })
-        : null}
-    </div>
+    <Menu
+      style={{
+        width: 260,
+        height: "100%",
+      }}
+      defaultSelectedKeys={[defaultActive]}
+      mode="inline"
+      items={items}
+      onClick={(...args) => {
+        if (typeof cbForClick === "function") {
+          cbForClick(...args);
+        }
+      }}
+    />
   );
 };
 
 const App = () => {
   const valueForBlock = "block";
+  const valueForAbout = "about";
+
   const [activeValue, setActiveValue] = useState(valueForBlock);
 
-  const menuList = [
-    {
-      name: "拦截设置",
-      value: valueForBlock,
-      cbForClick: (value) => {
-        setActiveValue(value);
-      },
-    },
+  const getItem = (label, key, icon, children) => {
+    return {
+      key,
+      icon,
+      children,
+      label,
+    };
+  };
+
+  const items = [
+    getItem(
+      "拦截设置",
+      valueForBlock,
+      <EyeInvisibleTwoTone style={{ fontSize: 16 }} twoToneColor="#eb2f96" />
+    ),
+    getItem(
+      "关于",
+      valueForAbout,
+      <QuestionCircleTwoTone style={{ fontSize: 16 }} twoToneColor="#52c41a" />
+    ),
   ];
 
   return (
@@ -113,14 +108,18 @@ const App = () => {
           style={{
             width: "260px",
             height: "100%",
-            background: "rgb(255,255,255)",
-            borderRight: "1px solid rgb(238,238,238)",
           }}
         >
-          <Menu list={menuList} defaultActive={activeValue} />
+          <LeftMenu
+            cbForClick={({ key }) => {
+              setActiveValue(key);
+            }}
+            items={items}
+            defaultActive={activeValue}
+          />
         </div>
         <div style={{ width: "100%", height: "100%", padding: "56px" }}>
-          {activeValue === menuList[0].value ? <BlockPanel /> : null}
+          {activeValue === valueForBlock ? <BlockPanel /> : null}
         </div>
       </div>
     </div>

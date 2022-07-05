@@ -102,7 +102,6 @@ export const SitesList = (props) => {
           <Radio.Group
             onChange={(e) => {
               const value = e?.target?.value;
-              debugger;
               if (value === overwriteValue) {
                 chrome.runtime.sendMessage(
                   {
