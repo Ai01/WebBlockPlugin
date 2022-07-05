@@ -4,7 +4,7 @@ import { Table, Empty, Radio, Checkbox, message } from "antd";
 export const SitesList = (props) => {
   const [list, setList] = useState([]);
 
-  useEffect(() => {
+  const getBlockSites = () => {
     chrome.runtime.sendMessage(
       {
         method: "getAllBlockedSites",
@@ -14,6 +14,10 @@ export const SitesList = (props) => {
         setList(allBlockedSites || []);
       }
     );
+  };
+
+  useEffect(() => {
+    getBlockSites();
   }, []);
 
   const columns = [
@@ -82,19 +86,48 @@ export const SitesList = (props) => {
       title: "拦截设置",
       key: "blockset",
       render: (text, record) => {
-        const { overwrite, redirect } = record || {};
+        const { overwrite, redirect, url } = record || {};
 
         const overwriteValue = "overwrite";
         const redirectValue = "redirect";
 
         return (
           <Radio.Group
-            onChange={(value) => {
-              // todo: 改变重定向和重写
-
+            onChange={(e) => {
+              const value = e?.target?.value;
+              debugger;
               if (value === overwriteValue) {
+                chrome.runtime.sendMessage(
+                  {
+                    method: "changeSiteBlock",
+                    site: url,
+                  },
+                  (response) => {
+                    const { success } = response;
+                    if (success) {
+                      message.success("设置重写成功");
+
+                      getBlockSites();
+                    }
+                  }
+                );
               }
+
               if (value === redirectValue) {
+                chrome.runtime.sendMessage(
+                  {
+                    method: "changeSiteRedirect",
+                    site: url,
+                  },
+                  (response) => {
+                    const { success } = response;
+                    if (success) {
+                      message.success("设置重定向成功");
+
+                      getBlockSites();
+                    }
+                  }
+                );
               }
             }}
             value={overwrite ? overwriteValue : redirectValue}

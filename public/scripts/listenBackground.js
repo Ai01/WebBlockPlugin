@@ -239,4 +239,53 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       allBlockedSites: activeBlockSites,
     });
   }
+
+  if (method === "changeSiteBlock") {
+    const { site } = message;
+
+    activeBlockSites = activeBlockSites.map(i => {
+      const { url } = i || {};
+      if(url === site) {
+        i.overwrite = true;
+        i.message = tipMessage;
+        i.redirect = false;
+      }
+
+      return i;
+    });
+
+    chrome.storage.sync.set(
+      { [KEY_FOR_BLOCK_SITES]: activeBlockSites },
+      function () {
+        console.log("block site update success", activeBlockSites);
+      }
+    );
+
+    sendResponse({ success: true });
+  }
+
+  if (method === "changeSiteRedirect") {
+    const { site } = message;
+    activeBlockSites = activeBlockSites.map(i => {
+      const { url } = i || {};
+      if(url === site) {
+        i.overwrite = false;
+        i.redirect = redirectUrl;
+      }
+
+      return i;
+    });
+
+    chrome.storage.sync.set(
+      { [KEY_FOR_BLOCK_SITES]: activeBlockSites },
+      function () {
+        console.log("block site update success", activeBlockSites);
+      }
+    );
+
+    sendResponse({ success: true });
+  }
+
+
+
 });
