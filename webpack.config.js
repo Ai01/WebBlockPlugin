@@ -1,9 +1,10 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ChromeExtensionReloader = require("webpack-ext-reloader");
+const CopyPlugin = require('copy-webpack-plugin');
 
 const generateCommonConfig = (env) => {
   return {
-    mode: 'production',
     output: {
       path: path.resolve(__dirname, "dist"),
       filename: "[name].bundle.js",
@@ -34,7 +35,7 @@ const generateCommonConfig = (env) => {
           test: /\.css$/i,
           exclude: /node_modules/,
           use: [
-            {loader: 'style-loader'},
+            { loader: "style-loader" },
             {
               loader: "css-loader",
               options: {
@@ -61,6 +62,12 @@ const configForPopupHtml = (env) => {
         filename: "popup.html",
         inject: true,
       }),
+      new ChromeExtensionReloader({
+        port: "9090",
+        entries: {
+          extensionPage: 'popup'
+        }
+      }),
     ],
   });
 };
@@ -78,11 +85,17 @@ const configForOptionsHtml = (env) => {
         filename: "options.html",
         inject: true,
       }),
+      new ChromeExtensionReloader({
+        port: "9091",
+        entries: {
+          extensionPage: 'option'
+        }
+      }),
+      new CopyPlugin({
+        patterns: [{ from: path.resolve(__dirname, 'public'), to: path.resolve(__dirname, 'dist')  }]
+      }),
     ],
   });
 };
 
-module.exports = [
-  configForPopupHtml(),
-  configForOptionsHtml(),
-];
+module.exports = [configForPopupHtml(), configForOptionsHtml()];

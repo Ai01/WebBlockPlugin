@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c53164cf-4bea-4d23-8409-11b1c0f9ef96" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/listenBackground.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/listenBackground.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="24lQbQ7hpkOAxLMqIs1yY0Yujo5" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c53164cf-4bea-4d23-8409-11b1c0f9ef96" name="Default Changelist" comment="" />
+      <created>1644202767179</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1644202767179</updated>
+      <workItem from="1644202773828" duration="7304000" />
+      <workItem from="1644227207642" duration="43000" />
+      <workItem from="1644235765684" duration="3066000" />
+      <workItem from="1644375461669" duration="701000" />
+      <workItem from="1644389579352" duration="4190000" />
+      <workItem from="1644399216115" duration="951000" />
+      <workItem from="1644408180977" duration="2380000" />
+      <workItem from="1644982473758" duration="3875000" />
+      <workItem from="1645412332860" duration="815000" />
+      <workItem from="1645499915751" duration="5616000" />
+      <workItem from="1645516838790" duration="1807000" />
+      <workItem from="1646211763695" duration="3071000" />
+      <workItem from="1647225563651" duration="3716000" />
+      <workItem from="1647258565448" duration="13732000" />
+      <workItem from="1649397313031" duration="239000" />
+      <workItem from="1649642764748" duration="588000" />
+      <workItem from="1649904267434" duration="2060000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>

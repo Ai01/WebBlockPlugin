@@ -5,6 +5,7 @@ import { QuestionCircleTwoTone, EyeInvisibleTwoTone } from "@ant-design/icons";
 import "./index.css";
 
 import { BlockPanel } from "./blockPanel.jsx";
+import { AboutPanel } from "./AboutPanel.jsx";
 
 const Header = () => {
   return (
@@ -19,7 +20,7 @@ const Header = () => {
     >
       <img src="./images/stop.png" style={{ width: "40px", height: "40px" }} />
       <div style={{ marginLeft: "10px", fontSize: "24px", fontWeight: "bold" }}>
-        注意力
+        冲浪控制
       </div>
     </div>
   );
@@ -131,6 +132,7 @@ const App = () => {
           }}
         >
           {activeValue === valueForBlock ? <BlockPanel /> : null}
+          {activeValue === valueForAbout ? <AboutPanel /> : null}
         </div>
       </div>
     </div>

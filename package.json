@@ -4,9 +4,8 @@
   "description": "用来阻止浏览网页的chrome浏览器插件。目的是让使用 浏览器的时候更多的将注意力放到重要的页面上而不是被娱乐内容带歪了。",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --watch ",
-    "build": "webpack",
-    "copyScript": "node ./copyPublicFolder.js"
+    "dev": "NODE_ENV=development webpack --watch --mode=development",
+    "build": "webpack --mode=production"
   },
   "repository": {
     "type": "git",
@@ -36,7 +35,8 @@
     "webpack-cli": "^4.10.0"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
     "html-webpack-plugin": "^5.5.0",
-    "webpack-dev-server": "^4.9.2"
+    "webpack-ext-reloader": "^1.1.9"
   }
 }
