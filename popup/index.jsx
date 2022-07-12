@@ -69,6 +69,9 @@ const Popup = () => {
   }, []);
 
   const host = currentPageUrl ? new URL(currentPageUrl).host : null;
+  const showButtons = host && redirectUrl
+    ? !(host === redirectUrl || currentPageUrl.indexOf("chrome-extension") !== -1)
+    : true;
 
   return (
     <>
@@ -90,8 +93,8 @@ const Popup = () => {
         <div id="url">{host}</div>
       </div>
       <div id="container-body">
-        {host === redirectUrl ? "专注下去，你是最棒的" : null}
-        {isCurrentPageBlocked && host !== redirectUrl ? (
+        {!showButtons ? "专注下去，你是最棒的" : null}
+        {isCurrentPageBlocked && showButtons ? (
           <button
             id="show-page-button"
             onClick={() => {
@@ -117,7 +120,7 @@ const Popup = () => {
             显示此页面
           </button>
         ) : null}
-        {!isCurrentPageBlocked && host !== redirectUrl ? (
+        {!isCurrentPageBlocked && showButtons ? (
           <div id="block-info-form" class="form-example">
             <div id="button-containers">
               <button
