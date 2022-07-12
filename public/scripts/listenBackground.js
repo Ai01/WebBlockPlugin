@@ -102,7 +102,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (method === "newTab") {
     // overwrite the html page if site is been blocked
     activeBlockSites.forEach((i) => {
-      const { url, host, message, overwrite, belling } = i;
+      const { url, host, message, overwrite, shortBrowser } = i;
 
       if (
         (host && site.indexOf(host) !== -1) ||
@@ -111,7 +111,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({
           overwrite,
           redirect: redirectUrl,
-          belling,
+          shortBrowser,
           data: message,
         });
       }
@@ -198,7 +198,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     activeBlockSites = activeBlockSites.map((i) => {
       const { url, host } = i || {};
       if (url === siteToRemove || host === hostToRemove) {
-        i.belling = true;
+        i.shortBrowser = true;
       }
       return i;
     });
@@ -219,7 +219,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     activeBlockSites = activeBlockSites.map((i) => {
       const { url, host } = i || {};
       if (url === siteToRemove || host === hostToRemove) {
-        i.belling = false;
+        i.shortBrowser = false;
       }
       return i;
     });
@@ -287,5 +287,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
 
+  if(method === 'changeShortBrowserTime') {
+    const { site, time } = message;
+    activeBlockSites = activeBlockSites.map(i => {
+      const { url } = i || {};
+      if(url === site) {
+        i.shortBrowserTime = time;
+      }
+
+      return i;
+    });
+
+    chrome.storage.sync.set(
+      { [KEY_FOR_BLOCK_SITES]: activeBlockSites },
+      function () {
+        console.log("block site update success", activeBlockSites);
+      }
+    );
+
+    sendResponse({ success: true, allBlockedSites: activeBlockSites });
+  }
 
 });

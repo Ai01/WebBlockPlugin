@@ -25,30 +25,30 @@ chrome.runtime.sendMessage(
   (response) => {
     console.log("newTab response", response);
 
-    const { data, overwrite, redirect, belling, minutes } = response || {};
+    const { data, overwrite, redirect, shortBrowser, shortBrowserTime } = response || {};
 
-    if (overwrite && !belling) {
+    if (overwrite && !shortBrowser) {
       const nextHtml = getTemplate(data);
       renderTemplate(nextHtml);
       return;
     }
 
-    if (redirect && !belling) {
+    if (redirect && !shortBrowser) {
       window.location.replace(redirect);
       return;
     }
 
-    if (belling && overwrite) {
+    if (shortBrowser && overwrite) {
       setTimeout(() => {
         const nextHtml = getTemplate(data);
         renderTemplate(nextHtml);
-      }, (Number(minutes) || 5) * 60 * 1000);
+      }, (Number(shortBrowserTime) || 5) * 60 * 1000);
     }
 
-    if (belling && redirect) {
+    if (shortBrowser && redirect) {
       setTimeout(() => {
         window.location.replace(redirect);
-      }, (Number(minutes) || 5) * 60 * 1000);
+      }, (Number(shortBrowserTime) || 5) * 60 * 1000);
     }
   }
 );

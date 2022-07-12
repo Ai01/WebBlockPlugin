@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Empty, Radio, Checkbox, message } from "antd";
+import { InputNumber, Table, Empty, Radio, Checkbox, message } from "antd";
 import { FaviconImage } from "./FaviconImage.jsx";
 
 export const SitesList = (props) => {
@@ -54,7 +54,7 @@ export const SitesList = (props) => {
       title: "短浏览设置",
       key: "operation",
       render: (text, record) => {
-        const { url, belling } = record;
+        const { url, shortBrowser, shortBrowserTime } = record;
         // todo: 改为时间设置，实现不同网站短浏览时间不同
 
         return (
@@ -81,10 +81,36 @@ export const SitesList = (props) => {
                   }
                 );
               }}
-              checked={belling}
+              checked={shortBrowser}
             >
-              短浏览5分钟
+              短浏览
             </Checkbox>
+            <InputNumber
+              style={{ width: 60 }}
+              min={1}
+              max={30}
+              defaultValue={shortBrowserTime ? Number(shortBrowserTime) : 5}
+              onChange={(value) => {
+                chrome.runtime.sendMessage(
+                  {
+                    method: "changeShortBrowserTime",
+                    site: url,
+                    time: value,
+                  },
+                  (response) => {
+                    const { allBlockedSites } = response;
+                    setList(allBlockedSites || []);
+
+                    message.success("短浏览时间设置成功");
+                  }
+                );
+              }}
+              formatter={(value) => {
+                console.log("v", value);
+                return Math.round(value);
+              }}
+            />
+            分钟
           </div>
         );
       },

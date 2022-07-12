@@ -7,6 +7,7 @@ const Popup = () => {
   const [allBlockedSites, setAllBlockSites] = useState([]);
   const [currentPageUrl, setCurrentPageUrl] = useState("");
   const [isCurrentPageBlocked, setIsCurrentPageBlocked] = useState("");
+  const [redirectUrl, setRedirectUrl] = useState("");
 
   // get all blocked sites
   useEffect(() => {
@@ -54,6 +55,19 @@ const Popup = () => {
     }
   }, [currentPageUrl, allBlockedSites]);
 
+  // get redirect url
+  useEffect(() => {
+    chrome.runtime.sendMessage(
+      {
+        method: "getRedirectUrl",
+      },
+      (response) => {
+        const { redirectUrl } = response;
+        setRedirectUrl(redirectUrl ? new URL(redirectUrl).host : null);
+      }
+    );
+  }, []);
+
   const host = currentPageUrl ? new URL(currentPageUrl).host : null;
 
   return (
@@ -76,7 +90,8 @@ const Popup = () => {
         <div id="url">{host}</div>
       </div>
       <div id="container-body">
-        {isCurrentPageBlocked ? (
+        {host === redirectUrl ? "专注下去，你是最棒的" : null}
+        {isCurrentPageBlocked && host !== redirectUrl ? (
           <button
             id="show-page-button"
             onClick={() => {
@@ -101,7 +116,8 @@ const Popup = () => {
           >
             显示此页面
           </button>
-        ) : (
+        ) : null}
+        {!isCurrentPageBlocked && host !== redirectUrl ? (
           <div id="block-info-form" class="form-example">
             <div id="button-containers">
               <button
@@ -150,7 +166,7 @@ const Popup = () => {
               </button>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
 
       <div id="footer">
