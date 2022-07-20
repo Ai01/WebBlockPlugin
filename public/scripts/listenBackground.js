@@ -10,37 +10,30 @@ const initBlockSite = () => {
     {
       url: "https://twitter.com",
       host: "twitter",
-      message: COMMON_MESSAGE,
     },
     {
       url: "https://qidian.com",
       host: "qidian",
-      message: COMMON_MESSAGE,
     },
     {
       url: "https://weibo.com",
       host: "weibo",
-      message: COMMON_MESSAGE,
     },
     {
       url: "https://bilibili.com",
       host: "bilibili",
-      message: COMMON_MESSAGE,
     },
     {
       url: "https://v2ex.com",
       host: "v2ex",
-      message: COMMON_MESSAGE,
     },
     {
       url: "https://douyu.com",
       host: "douyu",
-      message: COMMON_MESSAGE,
     },
     {
       url: "https://youtube.com",
       host: "youtube",
-      message: COMMON_MESSAGE,
     },
   ];
   chrome.storage.sync.set(
@@ -102,7 +95,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (method === "newTab") {
     // overwrite the html page if site is been blocked
     activeBlockSites.forEach((i) => {
-      const { url, host, message, overwrite, shortBrowser } = i;
+      const { url, host, overwrite, shortBrowser, shortBrowserTime } = i;
 
       if (
         (host && site.indexOf(host) !== -1) ||
@@ -112,7 +105,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           overwrite,
           redirect: redirectUrl,
           shortBrowser,
-          data: message,
+          data: tipMessage,
+          shortBrowserTime
         });
       }
     });

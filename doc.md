@@ -6,3 +6,7 @@
 2. reload page实现，目前的热更新无法实现页面刷新
 3. 增加webpack-plugin复制pulic内容：done
 4. 产出一个cli：create-react-chrome-extension来将能力输出
+
+## 国际化
+
+在popup，option中都增加一个按钮切换中英文，将文体数据放到background中
