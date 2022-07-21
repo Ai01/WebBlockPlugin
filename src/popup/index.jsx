@@ -1,21 +1,40 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import { languageOptions, wordList } from "../common/intl/index.js";
+import { MEHTOD_LIST } from "../common/constants.js";
+import { FaviconImage } from "../option/FaviconImage.jsx";
 import "./index.css";
 
 const Popup = () => {
   const [allBlockedSites, setAllBlockSites] = useState([]);
   const [currentPageUrl, setCurrentPageUrl] = useState("");
   const [isCurrentPageBlocked, setIsCurrentPageBlocked] = useState("");
+  const [redirectUrl, setRedirectUrl] = useState("");
+  const [languageType, setLanguageType] = useState(languageOptions[0].value);
+
+  useEffect(() => {
+    chrome.runtime.sendMessage(
+      { method: MEHTOD_LIST.getLanguageType.name },
+      (response) => {
+        console.log("language", response);
+        const { languageType } = response || {};
+        setLanguageType(languageType);
+      }
+    );
+  }, []);
 
   // get all blocked sites
   useEffect(() => {
-    chrome.runtime.sendMessage({ method: "getAllBlockedSites" }, (response) => {
-      console.log("response for all", response);
-      const { allBlockedSites } = response || {};
-      if (Array.isArray(allBlockedSites)) {
-        setAllBlockSites(allBlockedSites);
+    chrome.runtime.sendMessage(
+      { method: MEHTOD_LIST.getAllBlockedSites.name },
+      (response) => {
+        console.log("response for all", response);
+        const { allBlockedSites } = response || {};
+        if (Array.isArray(allBlockedSites)) {
+          setAllBlockSites(allBlockedSites);
+        }
       }
-    });
+    );
   }, []);
 
   // get current tab url
@@ -53,7 +72,27 @@ const Popup = () => {
     }
   }, [currentPageUrl, allBlockedSites]);
 
+  // get redirect url
+  useEffect(() => {
+    chrome.runtime.sendMessage(
+      {
+        method: MEHTOD_LIST.getRedirectUrl.name,
+      },
+      (response) => {
+        const { redirectUrl } = response;
+        setRedirectUrl(redirectUrl ? new URL(redirectUrl).host : null);
+      }
+    );
+  }, []);
+
   const host = currentPageUrl ? new URL(currentPageUrl).host : null;
+  const showButtons =
+    host && redirectUrl
+      ? !(
+          host === redirectUrl ||
+          currentPageUrl.indexOf("chrome-extension") !== -1
+        )
+      : true;
 
   return (
     <>
@@ -61,22 +100,28 @@ const Popup = () => {
         <div id="icon-background"></div>
         <div id="icon">
           {currentPageUrl ? (
-            <img
+            <FaviconImage
+              imageList={[
+                `http://www.google.com/s2/favicons?domain=${currentPageUrl}&sz=128`,
+                `http://www.google.com/s2/favicons?domain=${currentPageUrl}&sz=16`,
+                `${currentPageUrl}/favicon.ico`,
+                `chrome://favicon/size/128@1x/${currentPageUrl}`,
+              ]}
               style={{ width: "40px", height: "40px" }}
-              src={`chrome://favicon/size/128@1x/${currentPageUrl}`}
             />
           ) : null}
         </div>
         <div id="url">{host}</div>
       </div>
       <div id="container-body">
-        {isCurrentPageBlocked ? (
+        {!showButtons ? wordList.redirectUrlPopupTip[languageType] : null}
+        {isCurrentPageBlocked && showButtons ? (
           <button
             id="show-page-button"
             onClick={() => {
               chrome.runtime.sendMessage(
                 {
-                  method: "removeBlockSite",
+                  method: MEHTOD_LIST.removeBlockSite.name,
                   site: currentPageUrl,
                   host,
                 },
@@ -95,7 +140,8 @@ const Popup = () => {
           >
             显示此页面
           </button>
-        ) : (
+        ) : null}
+        {!isCurrentPageBlocked && showButtons ? (
           <div id="block-info-form" class="form-example">
             <div id="button-containers">
               <button
@@ -103,7 +149,7 @@ const Popup = () => {
                 onClick={() => {
                   chrome.runtime.sendMessage(
                     {
-                      method: "addBlockSite",
+                      method: MEHTOD_LIST.addBlockSite.name,
                       site: currentPageUrl,
                       host,
                     },
@@ -126,7 +172,7 @@ const Popup = () => {
                 onClick={() => {
                   chrome.runtime.sendMessage(
                     {
-                      method: "addRedirectSite",
+                      method: MEHTOD_LIST.addRedirectSite.name,
                       site: currentPageUrl,
                       host,
                     },
@@ -144,18 +190,10 @@ const Popup = () => {
               </button>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
 
       <div id="footer">
-        <div class="footer-icon-container">
-          <img
-            class="image-icon"
-            id="active-page-setting"
-            src="/images/block.svg"
-          />
-          <div>当前页面</div>
-        </div>
         <div
           class="footer-icon-container"
           id="setting-page"

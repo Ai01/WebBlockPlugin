@@ -1,0 +1,142 @@
+body {
+  width: 250px;
+  padding: 0px;
+  margin: 0px;
+  height: 350px;
+}
+
+#root {
+  height: 100%;
+}
+
+div.form-example {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#add-block-page-button {
+  color: #fff;
+  background: #0170fe;
+  border-radius: 4px;
+  border: none;
+}
+
+#redirect-block-page-button {
+  color: #fff;
+  background: #0170fe;
+  border-radius: 4px;
+  border: none;
+}
+
+#show-page-button {
+  color: #fff;
+  background: red;
+  font-size: 14px;
+  border-radius: 4px;
+  border: none;
+  margin-top: 20px;
+}
+
+#container {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+#header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#container-body {
+  box-sizing: border-box;
+  width: 100%;
+  height: 60%;
+  padding: 10px 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+}
+
+#footer {
+  width: 100%;
+  height: 15%;
+  box-shadow: 0px -1px 0.4em grey;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.footer-icon-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.image-icon {
+  width: 25px;
+  height: 25px;
+}
+
+#icon {
+  z-index: 1;
+  margin-top: 30px;
+  background: white;
+  border-radius: 50%;
+}
+
+#icon-background {
+  background: teal;
+  width: 100%;
+  height: 50px;
+  position: absolute;
+}
+
+#url {
+  font-size: large;
+  font-weight: bold;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+button {
+  height: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0px 20px;
+}
+
+#block-info-form {
+  width: 100%;
+  height: 100%;
+}
+
+#button-containers {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  padding-top: 20px;
+}
+
+#redirect-block-page-button {
+  margin-top: 10px;
+  background: lightseagreen;
+}

@@ -1,48 +1,15 @@
-const KEY_FOR_BLOCK_SITES = "BlockSites";
-const KEY_FOR_BLOCK_MESSAGE = "key_for_block_messages_xxxxy";
-const KEY_FOR_REDIRECT_URL = "key_for_redirect_url";
+import {
+  KEY_FOR_BLOCK_SITES,
+  KEY_FOR_BLOCK_MESSAGE,
+  KEY_FOR_REDIRECT_URL,
+  KEY_FOR_LANGUAGE_TYPE,
+  COMMON_MESSAGE,
+  BLOCK_SITE_LIST,
+  DEFAULT_REDIRECT_URL,
+  MEHTOD_LIST,
+} from "../common/constants.js";
 
 const initBlockSite = () => {
-  const COMMON_MESSAGE = "千金难买寸光阴";
-
-  // if block site can customize add, storage user's block site
-  const BLOCK_SITE_LIST = [
-    {
-      url: "https://twitter.com",
-      host: "twitter",
-      message: COMMON_MESSAGE,
-    },
-    {
-      url: "https://qidian.com",
-      host: "qidian",
-      message: COMMON_MESSAGE,
-    },
-    {
-      url: "https://weibo.com",
-      host: "weibo",
-      message: COMMON_MESSAGE,
-    },
-    {
-      url: "https://bilibili.com",
-      host: "bilibili",
-      message: COMMON_MESSAGE,
-    },
-    {
-      url: "https://v2ex.com",
-      host: "v2ex",
-      message: COMMON_MESSAGE,
-    },
-    {
-      url: "https://douyu.com",
-      host: "douyu",
-      message: COMMON_MESSAGE,
-    },
-    {
-      url: "https://youtube.com",
-      host: "youtube",
-      message: COMMON_MESSAGE,
-    },
-  ];
   chrome.storage.sync.set(
     { [KEY_FOR_BLOCK_SITES]: BLOCK_SITE_LIST },
     function () {
@@ -57,7 +24,6 @@ const initBlockSite = () => {
     }
   );
 
-  const DEFAULT_REDIRECT_URL = "https://github.com";
   chrome.storage.sync.set(
     { [KEY_FOR_REDIRECT_URL]: DEFAULT_REDIRECT_URL },
     function () {
@@ -94,15 +60,20 @@ getStorageSyncData(KEY_FOR_REDIRECT_URL).then((url) => {
   redirectUrl = url;
 });
 
+let activeLanguageType;
+getStorageSyncData(KEY_FOR_LANGUAGE_TYPE).then((languageType) => {
+  activeLanguageType = languageType;
+});
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("onMessage", message);
 
   const { method, site } = message || {};
 
-  if (method === "newTab") {
+  if (method === MEHTOD_LIST.newTab.name) {
     // overwrite the html page if site is been blocked
     activeBlockSites.forEach((i) => {
-      const { url, host, message, overwrite, belling } = i;
+      const { url, host, overwrite, shortBrowser, shortBrowserTime } = i;
 
       if (
         (host && site.indexOf(host) !== -1) ||
@@ -111,14 +82,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({
           overwrite,
           redirect: redirectUrl,
-          belling,
-          data: message,
+          shortBrowser,
+          data: tipMessage,
+          shortBrowserTime,
         });
       }
     });
   }
 
-  if (method === "addBlockSite") {
+  if (method === MEHTOD_LIST.addBlockSite.name) {
     const { site } = message;
     activeBlockSites.push({
       url: site,
@@ -137,7 +109,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true });
   }
 
-  if (method === "setBlockMessage") {
+  if (method === MEHTOD_LIST.setBlockMessage.name) {
     const { blockMessage } = message;
     if (!blockMessage) return;
 
@@ -152,11 +124,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true });
   }
 
-  if (method === "getBlockMessage") {
+  if (method === MEHTOD_LIST.getBlockMessage.name) {
     sendResponse({ blockMessage: tipMessage });
   }
 
-  if (method === "setRedirectUrl") {
+  if (method === MEHTOD_LIST.setRedirectUrl.name) {
     const { redirectUrl: newRedirectUrl } = message;
     if (!newRedirectUrl) return;
 
@@ -171,11 +143,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true });
   }
 
-  if (method === "getRedirectUrl") {
+  if (method === MEHTOD_LIST.getRedirectUrl.name) {
     sendResponse({ redirectUrl: redirectUrl });
   }
 
-  if (method === "addRedirectSite") {
+  if (method === MEHTOD_LIST.addRedirectSite.name) {
     const { site } = message;
     activeBlockSites.push({
       url: site,
@@ -192,13 +164,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true });
   }
 
-  if (method === "bellBlockSite") {
+  if (method === MEHTOD_LIST.bellBlockSite.name) {
     const { site: siteToRemove, host: hostToRemove } = message;
 
     activeBlockSites = activeBlockSites.map((i) => {
       const { url, host } = i || {};
       if (url === siteToRemove || host === hostToRemove) {
-        i.belling = true;
+        i.shortBrowser = true;
       }
       return i;
     });
@@ -213,13 +185,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true, allBlockedSites: activeBlockSites });
   }
 
-  if (method === "noBellBlockSite") {
+  if (method === MEHTOD_LIST.noBellBlockSite.name) {
     const { site: siteToRemove, host: hostToRemove } = message;
 
     activeBlockSites = activeBlockSites.map((i) => {
       const { url, host } = i || {};
       if (url === siteToRemove || host === hostToRemove) {
-        i.belling = false;
+        i.shortBrowser = false;
       }
       return i;
     });
@@ -234,9 +206,90 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true, allBlockedSites: activeBlockSites });
   }
 
-  if (method === "getAllBlockedSites") {
+  if (method === MEHTOD_LIST.getAllBlockedSites.name) {
     sendResponse({
       allBlockedSites: activeBlockSites,
+    });
+  }
+
+  if (method === MEHTOD_LIST.changeSiteBlock.name) {
+    const { site } = message;
+
+    activeBlockSites = activeBlockSites.map((i) => {
+      const { url } = i || {};
+      if (url === site) {
+        i.overwrite = true;
+        i.message = tipMessage;
+        i.redirect = false;
+      }
+
+      return i;
+    });
+
+    chrome.storage.sync.set(
+      { [KEY_FOR_BLOCK_SITES]: activeBlockSites },
+      function () {
+        console.log("block site update success", activeBlockSites);
+      }
+    );
+
+    sendResponse({ success: true });
+  }
+
+  if (method === MEHTOD_LIST.changeSiteRedirect.name) {
+    const { site } = message;
+    activeBlockSites = activeBlockSites.map((i) => {
+      const { url } = i || {};
+      if (url === site) {
+        i.overwrite = false;
+        i.redirect = redirectUrl;
+      }
+
+      return i;
+    });
+
+    chrome.storage.sync.set(
+      { [KEY_FOR_BLOCK_SITES]: activeBlockSites },
+      function () {
+        console.log("block site update success", activeBlockSites);
+      }
+    );
+
+    sendResponse({ success: true });
+  }
+
+  if (method === MEHTOD_LIST.changeShortBrowserTime.name) {
+    const { site, time } = message;
+    activeBlockSites = activeBlockSites.map((i) => {
+      const { url } = i || {};
+      if (url === site) {
+        i.shortBrowserTime = time;
+      }
+
+      return i;
+    });
+
+    chrome.storage.sync.set(
+      { [KEY_FOR_BLOCK_SITES]: activeBlockSites },
+      function () {
+        console.log("block site update success", activeBlockSites);
+      }
+    );
+
+    sendResponse({ success: true, allBlockedSites: activeBlockSites });
+  }
+
+  if (method === MEHTOD_LIST.changeLanguageType.name) {
+    const { languageValue } = message;
+    chrome.storage.sync.set({ [KEY_FOR_LANGUAGE_TYPE]: languageValue }, () => {
+      activeLanguageType = languageValue;
+    });
+  }
+
+  if (method === MEHTOD_LIST.getLanguageType.name) {
+    sendResponse({
+      success: true,
+      languageType: activeLanguageType,
     });
   }
 });

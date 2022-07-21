@@ -1,31 +1,31 @@
 # WebBlockPlugin
+
 用来阻止浏览网页的chrome浏览器插件。目的是让使用
 浏览器的时候更多的将注意力放到重要的页面上而不是被娱乐内容带歪了。
 
+![pop页面](./public/images/popup.jpeg)
 
-![pop页面](./images/popup.jpeg)
+## 拦截页面
 
-### 拦截页面
-
-![拦截页面展示](./images/overwrite.jpeg)
-![拦截设置页面](./images/block.jpeg)
+![拦截页面展示](./public/images/overwrite.jpeg)
+![拦截设置页面](./public/images/block.jpeg)
 
 ### 重定向页面
 
-![重定向设置页面](./images/redirectSet.jpeg)
+![重定向设置页面](./public/images/redirectSet.jpeg)
 
 ## 支持功能
 
 * 拦截页面,并重写为对应的文本
 * 重定向页面到制定页面
+* 短浏览：当访问被block的页面的时候，5分钟会出一个提示
+* 重定向的页面不能拦截
 
 ### mvp功能
 
 * 联系开发者: 使用腾讯开源社群产品
-* 重定向的页面不能拦截
-* 多个重定向页面（一直是一个会导致后续无法在把注意力从娱乐上引导走）
-* 在被重定向去的页面上增加切换按钮，可以切换需要的页面
-* 当访问被block的页面的时候，5分钟会出一个提示
+* 国际化：支持英文和中文
+* 新手引导
 
 ### 附加功能(并不一定会做)
 
