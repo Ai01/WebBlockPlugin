@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, message } from "antd";
 import { SitesList } from "./siteList.jsx";
 import { MEHTOD_LIST } from "../common/constants.js";
+import { wordList } from "../common/intl/index.js";
 
-export const BlockPanel = () => {
+export const BlockPanel = (props) => {
+  const { languageType } = props || {};
+
   const [redirectUrl, setRedirectUrl] = useState();
   const [tipText, setTipText] = useState(null);
 
@@ -42,7 +45,7 @@ export const BlockPanel = () => {
           minWidth: "109px",
         }}
       >
-        设置拦截文本：
+        {wordList.setRewriteText[languageType]}
       </div>
       <div
         style={{
@@ -51,7 +54,7 @@ export const BlockPanel = () => {
           color: "rgb(166,166,166)",
         }}
       >
-        该文本会在网页被拦截的时候显示，作为提示
+        {wordList.tipForRewriteText[languageType]}
       </div>
       <Input.Group compact>
         <Input
@@ -81,7 +84,7 @@ export const BlockPanel = () => {
             );
           }}
         >
-          保存拦截文本
+          {wordList.saveRewriteText[languageType]}
         </Button>
       </Input.Group>
 
@@ -95,7 +98,7 @@ export const BlockPanel = () => {
           marginTop: 10,
         }}
       >
-        设置重定向网址：
+        {wordList.setRedirectUrl[languageType]}
       </div>
       <div
         style={{
@@ -104,7 +107,7 @@ export const BlockPanel = () => {
           color: "rgb(166,166,166)",
         }}
       >
-        当网页被重定向的时候，该网页会显示
+        {wordList.tipForRedirectUrl[languageType]}
       </div>
       <Input.Group compact>
         <Input
@@ -131,11 +134,11 @@ export const BlockPanel = () => {
             );
           }}
         >
-          保存重定向网站
+          {wordList.saveRedirectUrl[languageType]}
         </Button>
       </Input.Group>
       <div style={{ marginTop: "30px" }}>
-        <SitesList />
+        <SitesList languageType={languageType} />
       </div>
     </div>
   );

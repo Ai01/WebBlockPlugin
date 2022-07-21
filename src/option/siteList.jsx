@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { InputNumber, Table, Empty, Radio, Checkbox, message } from "antd";
 import { FaviconImage } from "./FaviconImage.jsx";
 import { MEHTOD_LIST } from "../common/constants.js";
+import { wordList } from "../common/intl/index.js";
 
 export const SitesList = (props) => {
+  const { languageType } = props || {};
+
   const [list, setList] = useState([]);
 
   const getBlockSites = () => {
@@ -24,7 +27,7 @@ export const SitesList = (props) => {
 
   const columns = [
     {
-      title: "网址",
+      title: wordList.url[languageType],
       dataIndex: "url",
       key: "url",
       render: (url) => {
@@ -52,7 +55,7 @@ export const SitesList = (props) => {
       },
     },
     {
-      title: "短浏览设置",
+      title: wordList.shortBrowserSetting[languageType],
       key: "operation",
       render: (text, record) => {
         const { url, shortBrowser, shortBrowserTime } = record;
@@ -75,16 +78,20 @@ export const SitesList = (props) => {
                     setList(allBlockedSites || []);
 
                     if (isShortBrowser) {
-                      message.success("短浏览设置成功");
+                      message.success(
+                        wordList.successTipForShortBrowserSet[languageType]
+                      );
                     } else {
-                      message.success("短浏览关闭");
+                      message.success(
+                        wordList.closeTipForShortBrowser[languageType]
+                      );
                     }
                   }
                 );
               }}
               checked={shortBrowser}
             >
-              短浏览
+              {wordList.shortBrowser[languageType]}
             </Checkbox>
             <InputNumber
               style={{ width: 60 }}
@@ -102,7 +109,9 @@ export const SitesList = (props) => {
                     const { allBlockedSites } = response;
                     setList(allBlockedSites || []);
 
-                    message.success("短浏览时间设置成功");
+                    message.success(
+                      wordList.shortBrowserTimeSettingTip[languageType]
+                    );
                   }
                 );
               }}
@@ -111,13 +120,13 @@ export const SitesList = (props) => {
                 return Math.round(value);
               }}
             />
-            分钟
+            {wordList.minute[languageType]}
           </div>
         );
       },
     },
     {
-      title: "拦截设置",
+      title: wordList.blockSetting[languageType],
       key: "blockset",
       render: (text, record) => {
         const { overwrite, redirect, url } = record || {};
@@ -138,7 +147,7 @@ export const SitesList = (props) => {
                   (response) => {
                     const { success } = response;
                     if (success) {
-                      message.success("设置重写成功");
+                      message.success(wordList.setRewriteSuccess[languageType]);
 
                       getBlockSites();
                     }
@@ -155,7 +164,7 @@ export const SitesList = (props) => {
                   (response) => {
                     const { success } = response;
                     if (success) {
-                      message.success("设置重定向成功");
+                      message.success(wordList.setRedirectSuccess[languageType]);
 
                       getBlockSites();
                     }
@@ -165,8 +174,12 @@ export const SitesList = (props) => {
             }}
             value={overwrite ? overwriteValue : redirectValue}
           >
-            <Radio value={overwriteValue}>重写</Radio>
-            <Radio value={redirectValue}>重定向</Radio>
+            <Radio value={overwriteValue}>
+              {wordList.rewrite[languageType]}
+            </Radio>
+            <Radio value={redirectValue}>
+              {wordList.redirect[languageType]}
+            </Radio>
           </Radio.Group>
         );
       },
@@ -184,7 +197,7 @@ export const SitesList = (props) => {
           dataSource={list}
         />
       ) : (
-        <Empty description="请添加网址" />
+        <Empty description={wordList.tipForAdd[languageType]} />
       )}
     </div>
   );

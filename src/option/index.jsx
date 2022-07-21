@@ -92,7 +92,6 @@ const App = () => {
   const valueForBlock = "block";
   const valueForAbout = "about";
   const [activeValue, setActiveValue] = useState(valueForBlock);
-
   const [languageValue, setLanguageValue] = useState(languageOptions[0].value);
 
   const getItem = (label, key, icon, children) => {
@@ -106,7 +105,7 @@ const App = () => {
 
   const items = [
     getItem(
-      "拦截设置",
+      wordList.blockSetting[languageValue],
       valueForBlock,
       <EyeInvisibleTwoTone
         style={{ fontSize: 16 }}
@@ -114,7 +113,7 @@ const App = () => {
       />
     ),
     getItem(
-      "关于",
+      wordList.about[languageValue],
       valueForAbout,
       <QuestionCircleTwoTone
         style={{ fontSize: 16 }}
@@ -176,7 +175,9 @@ const App = () => {
             borderLeft: "1px solid #f0f0f0",
           }}
         >
-          {activeValue === valueForBlock ? <BlockPanel /> : null}
+          {activeValue === valueForBlock ? (
+            <BlockPanel languageType={languageValue} />
+          ) : null}
           {activeValue === valueForAbout ? <AboutPanel /> : null}
         </div>
       </div>
