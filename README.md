@@ -1,18 +1,18 @@
 # WebBlockPlugin
+
 用来阻止浏览网页的chrome浏览器插件。目的是让使用
 浏览器的时候更多的将注意力放到重要的页面上而不是被娱乐内容带歪了。
 
+![pop页面](./public/images/popup.jpeg)
 
-![pop页面](./images/popup.jpeg)
+## 拦截页面
 
-### 拦截页面
-
-![拦截页面展示](./images/overwrite.jpeg)
-![拦截设置页面](./images/block.jpeg)
+![拦截页面展示](./public/images/overwrite.jpeg)
+![拦截设置页面](./public/images/block.jpeg)
 
 ### 重定向页面
 
-![重定向设置页面](./images/redirectSet.jpeg)
+![重定向设置页面](./public/images/redirectSet.jpeg)
 
 ## 支持功能
 
