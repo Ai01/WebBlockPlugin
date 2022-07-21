@@ -25,7 +25,8 @@ chrome.runtime.sendMessage(
   (response) => {
     console.log("newTab response", response);
 
-    const { data, overwrite, redirect, shortBrowser, shortBrowserTime } = response || {};
+    const { data, overwrite, redirect, shortBrowser, shortBrowserTime } =
+      response || {};
 
     if (overwrite && !shortBrowser) {
       const nextHtml = getTemplate(data);

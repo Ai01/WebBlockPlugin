@@ -12,16 +12,12 @@
     }
   },
   "background": {
-    "scripts": [
-      "scripts/getCurrentWindow.js",
-      "scripts/getCurrentTab.js",
-      "scripts/listenBackground.js"
-    ]
+    "scripts": ["background.bundle.js"]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["scripts/injectedToPage.js"],
+      "js": ["injectedScript.bundle.js"],
       "run_at": "document_start"
     }
   ],

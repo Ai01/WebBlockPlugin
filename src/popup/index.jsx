@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import { languageOptions, wordList } from "../common/intl/index.js";
+import { MEHTOD_LIST } from "../common/constants.js";
 import { FaviconImage } from "../option/FaviconImage.jsx";
 import "./index.css";
 
@@ -8,16 +10,31 @@ const Popup = () => {
   const [currentPageUrl, setCurrentPageUrl] = useState("");
   const [isCurrentPageBlocked, setIsCurrentPageBlocked] = useState("");
   const [redirectUrl, setRedirectUrl] = useState("");
+  const [languageType, setLanguageType] = useState(languageOptions[0].value);
+
+  useEffect(() => {
+    chrome.runtime.sendMessage(
+      { method: MEHTOD_LIST.getLanguageType.name },
+      (response) => {
+        console.log("language", response);
+        const { languageType } = response || {};
+        setLanguageType(languageType);
+      }
+    );
+  }, []);
 
   // get all blocked sites
   useEffect(() => {
-    chrome.runtime.sendMessage({ method: "getAllBlockedSites" }, (response) => {
-      console.log("response for all", response);
-      const { allBlockedSites } = response || {};
-      if (Array.isArray(allBlockedSites)) {
-        setAllBlockSites(allBlockedSites);
+    chrome.runtime.sendMessage(
+      { method: MEHTOD_LIST.getAllBlockedSites.name },
+      (response) => {
+        console.log("response for all", response);
+        const { allBlockedSites } = response || {};
+        if (Array.isArray(allBlockedSites)) {
+          setAllBlockSites(allBlockedSites);
+        }
       }
-    });
+    );
   }, []);
 
   // get current tab url
@@ -59,7 +76,7 @@ const Popup = () => {
   useEffect(() => {
     chrome.runtime.sendMessage(
       {
-        method: "getRedirectUrl",
+        method: MEHTOD_LIST.getRedirectUrl.name,
       },
       (response) => {
         const { redirectUrl } = response;
@@ -69,9 +86,13 @@ const Popup = () => {
   }, []);
 
   const host = currentPageUrl ? new URL(currentPageUrl).host : null;
-  const showButtons = host && redirectUrl
-    ? !(host === redirectUrl || currentPageUrl.indexOf("chrome-extension") !== -1)
-    : true;
+  const showButtons =
+    host && redirectUrl
+      ? !(
+          host === redirectUrl ||
+          currentPageUrl.indexOf("chrome-extension") !== -1
+        )
+      : true;
 
   return (
     <>
@@ -93,14 +114,14 @@ const Popup = () => {
         <div id="url">{host}</div>
       </div>
       <div id="container-body">
-        {!showButtons ? "专注下去，你是最棒的" : null}
+        {!showButtons ? wordList.redirectUrlPopupTip[languageType] : null}
         {isCurrentPageBlocked && showButtons ? (
           <button
             id="show-page-button"
             onClick={() => {
               chrome.runtime.sendMessage(
                 {
-                  method: "removeBlockSite",
+                  method: MEHTOD_LIST.removeBlockSite.name,
                   site: currentPageUrl,
                   host,
                 },
@@ -128,7 +149,7 @@ const Popup = () => {
                 onClick={() => {
                   chrome.runtime.sendMessage(
                     {
-                      method: "addBlockSite",
+                      method: MEHTOD_LIST.addBlockSite.name,
                       site: currentPageUrl,
                       host,
                     },
@@ -151,7 +172,7 @@ const Popup = () => {
                 onClick={() => {
                   chrome.runtime.sendMessage(
                     {
-                      method: "addRedirectSite",
+                      method: MEHTOD_LIST.addRedirectSite.name,
                       site: currentPageUrl,
                       host,
                     },

@@ -1,26 +1,67 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { Menu } from "antd";
-import { QuestionCircleTwoTone, EyeInvisibleTwoTone } from "@ant-design/icons";
+import { Menu, Radio, message } from "antd";
+import {
+  QuestionCircleTwoTone,
+  EyeInvisibleTwoTone,
+  ChromeFilled,
+} from "@ant-design/icons";
 import "./index.css";
-
 import { BlockPanel } from "./blockPanel.jsx";
 import { AboutPanel } from "./AboutPanel.jsx";
+import { wordList, languageOptions } from "../common/intl/index.js";
+import { MEHTOD_LIST } from "../common/constants.js";
 
-const Header = () => {
+const Header = (props) => {
+  const { languageValue, setLanguageValue } = props;
+
   return (
     <div
       style={{
         display: "flex",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
         alignItems: "center",
         height: "100%",
         padding: "12px",
       }}
     >
-      <img src="./images/stop.png" style={{ width: "40px", height: "40px" }} />
-      <div style={{ marginLeft: "10px", fontSize: "24px", fontWeight: "bold" }}>
-        冲浪控制
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <img
+          src="./images/stop.png"
+          style={{ width: "40px", height: "40px" }}
+        />
+        <div
+          style={{ marginLeft: "10px", fontSize: "24px", fontWeight: "bold" }}
+        >
+          {wordList.pluginName[languageValue]}
+        </div>
+      </div>
+      <div>
+        <Radio.Group
+          options={languageOptions}
+          value={languageValue}
+          onChange={(e) => {
+            const checkedValue = e?.target?.value;
+
+            chrome.runtime.sendMessage(
+              {
+                method: MEHTOD_LIST.changeLanguageType.name,
+                languageValue: checkedValue,
+              },
+              (response) => {
+                setLanguageValue(checkedValue);
+                message.success(wordList.languageChangeTip[checkedValue]);
+              }
+            );
+          }}
+        />
       </div>
     </div>
   );
@@ -50,8 +91,9 @@ const LeftMenu = (props) => {
 const App = () => {
   const valueForBlock = "block";
   const valueForAbout = "about";
-
   const [activeValue, setActiveValue] = useState(valueForBlock);
+
+  const [languageValue, setLanguageValue] = useState(languageOptions[0].value);
 
   const getItem = (label, key, icon, children) => {
     return {
@@ -98,7 +140,10 @@ const App = () => {
           borderBottom: "1px solid rgb(238,238,238)",
         }}
       >
-        <Header />
+        <Header
+          languageValue={languageValue}
+          setLanguageValue={setLanguageValue}
+        />
       </div>
       <div
         style={{

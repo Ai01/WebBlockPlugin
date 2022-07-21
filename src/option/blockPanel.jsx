@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input, Button, message } from "antd";
 import { SitesList } from "./siteList.jsx";
+import { MEHTOD_LIST } from "../common/constants.js";
 
 export const BlockPanel = () => {
   const [redirectUrl, setRedirectUrl] = useState();
@@ -9,7 +10,7 @@ export const BlockPanel = () => {
   useEffect(() => {
     chrome.runtime.sendMessage(
       {
-        method: "getBlockMessage",
+        method: MEHTOD_LIST.getBlockMessage.name,
       },
       (response) => {
         const { blockMessage } = response;
@@ -21,7 +22,7 @@ export const BlockPanel = () => {
   useEffect(() => {
     chrome.runtime.sendMessage(
       {
-        method: "getRedirectUrl",
+        method: MEHTOD_LIST.getRedirectUrl.name,
       },
       (response) => {
         const { redirectUrl } = response;
@@ -70,7 +71,7 @@ export const BlockPanel = () => {
           onClick={() => {
             chrome.runtime.sendMessage(
               {
-                method: "setBlockMessage",
+                method: MEHTOD_LIST.setBlockMessage.name,
                 blockMessage: tipText,
               },
               (response) => {
@@ -120,7 +121,7 @@ export const BlockPanel = () => {
           onClick={() => {
             chrome.runtime.sendMessage(
               {
-                method: "setRedirectUrl",
+                method: MEHTOD_LIST.setRedirectUrl.name,
                 redirectUrl: this.state.redirectUrl,
               },
               (response) => {

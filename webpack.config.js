@@ -1,7 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ChromeExtensionReloader = require("webpack-ext-reloader");
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 const generateCommonConfig = (env) => {
   return {
@@ -49,24 +49,54 @@ const generateCommonConfig = (env) => {
   };
 };
 
+const configForBackgroundJs = (env) => {
+  const commonConfig = generateCommonConfig(env);
+
+  return Object.assign({}, commonConfig, {
+    entry: {
+      popup: path.resolve(__dirname, "src", "background", "index.js"),
+    },
+    output: {
+      path: path.resolve(__dirname, "dist"),
+      filename: "background.bundle.js",
+    },
+    plugins: [],
+  });
+};
+
+const configForInjectedJs = (env) => {
+  const commonConfig = generateCommonConfig(env);
+
+  return Object.assign({}, commonConfig, {
+    entry: {
+      popup: path.resolve(__dirname, "src", "injectedScript", "index.js"),
+    },
+    output: {
+      path: path.resolve(__dirname, "dist"),
+      filename: "injectedScript.bundle.js",
+    },
+    plugins: [],
+  });
+};
+
 const configForPopupHtml = (env) => {
   const commonConfig = generateCommonConfig(env);
 
   return Object.assign({}, commonConfig, {
     entry: {
-      popup: path.resolve(__dirname, "popup", "index.jsx"),
+      popup: path.resolve(__dirname, "src", "popup", "index.jsx"),
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "popup", "popup.html"),
+        template: path.resolve(__dirname, "src", "popup", "popup.html"),
         filename: "popup.html",
         inject: true,
       }),
       new ChromeExtensionReloader({
         port: "9090",
         entries: {
-          extensionPage: 'popup'
-        }
+          extensionPage: "popup",
+        },
       }),
     ],
   });
@@ -77,25 +107,35 @@ const configForOptionsHtml = (env) => {
 
   return Object.assign({}, commonConfig, {
     entry: {
-      option: path.resolve(__dirname, "option", "index.jsx"),
+      option: path.resolve(__dirname, "src", "option", "index.jsx"),
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "option", "option.html"),
+        template: path.resolve(__dirname, "src", "option", "option.html"),
         filename: "options.html",
         inject: true,
       }),
       new ChromeExtensionReloader({
         port: "9091",
         entries: {
-          extensionPage: 'option'
-        }
+          extensionPage: "option",
+        },
       }),
       new CopyPlugin({
-        patterns: [{ from: path.resolve(__dirname, 'public'), to: path.resolve(__dirname, 'dist')  }]
+        patterns: [
+          {
+            from: path.resolve(__dirname, "public"),
+            to: path.resolve(__dirname, "dist"),
+          },
+        ],
       }),
     ],
   });
 };
 
-module.exports = [configForPopupHtml(), configForOptionsHtml()];
+module.exports = [
+  configForBackgroundJs(),
+  configForInjectedJs(),
+  configForPopupHtml(),
+  configForOptionsHtml(),
+];

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { InputNumber, Table, Empty, Radio, Checkbox, message } from "antd";
 import { FaviconImage } from "./FaviconImage.jsx";
+import { MEHTOD_LIST } from "../common/constants.js";
 
 export const SitesList = (props) => {
   const [list, setList] = useState([]);
@@ -8,7 +9,7 @@ export const SitesList = (props) => {
   const getBlockSites = () => {
     chrome.runtime.sendMessage(
       {
-        method: "getAllBlockedSites",
+        method: MEHTOD_LIST.getAllBlockedSites.name,
       },
       (response) => {
         const { allBlockedSites } = response;
@@ -65,8 +66,8 @@ export const SitesList = (props) => {
                 chrome.runtime.sendMessage(
                   {
                     method: isShortBrowser
-                      ? "bellBlockSite"
-                      : "noBellBlockSite",
+                      ? MEHTOD_LIST.bellBlockSite.name
+                      : MEHTOD_LIST.noBellBlockSite.name,
                     site: url,
                   },
                   (response) => {
@@ -93,7 +94,7 @@ export const SitesList = (props) => {
               onChange={(value) => {
                 chrome.runtime.sendMessage(
                   {
-                    method: "changeShortBrowserTime",
+                    method: MEHTOD_LIST.changeShortBrowserTime.name,
                     site: url,
                     time: value,
                   },
@@ -131,7 +132,7 @@ export const SitesList = (props) => {
               if (value === overwriteValue) {
                 chrome.runtime.sendMessage(
                   {
-                    method: "changeSiteBlock",
+                    method: MEHTOD_LIST.changeSiteBlock.name,
                     site: url,
                   },
                   (response) => {
@@ -148,7 +149,7 @@ export const SitesList = (props) => {
               if (value === redirectValue) {
                 chrome.runtime.sendMessage(
                   {
-                    method: "changeSiteRedirect",
+                    method: MEHTOD_LIST.changeSiteRedirect.name,
                     site: url,
                   },
                   (response) => {
